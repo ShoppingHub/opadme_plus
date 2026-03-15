@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BetonMe — Brand System</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary:    #0F2F33;
+      --bg-secondary:  #1F4A50;
+      --bg-neutral:    #F4F4F2;
+      --text-primary:  #EAEAEA;
+      --text-secondary:#B9C0C1;
+      --accent:        #E24A4A;
+      --graph-pos:     #7DA3A0;
+      --graph-neu:     #8C9496;
+      --graph-dec:     #BFA37A;
+
+      --space-xs:  4px;
+      --space-sm:  8px;
+      --space-md:  16px;
+      --space-lg:  24px;
+      --space-xl:  32px;
+      --space-xxl: 48px;
+
+      --radius: 12px;
+      --font-mono: 'DM Mono', monospace;
+      --font-sans: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── LAYOUT ── */
+    .page { position: relative; z-index: 1; max-width: 960px; margin: 0 auto; padding: var(--space-xxl) var(--space-xl); }
+
+    /* ── HERO ── */
+    .hero {
+      padding: var(--space-xxl) 0 60px;
+      border-bottom: 1px solid rgba(185,192,193,0.12);
+      margin-bottom: 60px;
+    }
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-lg);
+      display: flex; align-items: center; gap: var(--space-sm);
+    }
+    .hero-label::before {
+      content: '';
+      display: inline-block;
+      width: 20px; height: 1px;
+      background: var(--accent);
+    }
+    .hero h1 {
+      font-size: clamp(42px, 8vw, 80px);
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      color: var(--text-primary);
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero-sub {
+      margin-top: var(--space-lg);
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    /* ── SECTION ── */
+    .section { margin-bottom: 72px; }
+    .section-header {
+      display: flex; align-items: baseline; gap: var(--space-md);
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid rgba(185,192,193,0.1);
+    }
+    .section-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    /* ── PRINCIPLES ── */
+    .principles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: var(--space-md);
+    }
+    .principle-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: var(--space-lg);
+      border: 1px solid rgba(185,192,193,0.08);
+      transition: border-color 300ms ease-in-out;
+    }
+    .principle-card:hover { border-color: rgba(185,192,193,0.22); }
+    .principle-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── COLORS ── */
+    .colors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: var(--space-md);
+    }
+    .color-swatch {
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid rgba(185,192,193,0.08);
+    }
+    .swatch-block {
+      height: 72px;
+      width: 100%;
+    }
+    .swatch-info {
+      background: var(--bg-secondary);
+      padding: var(--space-sm) var(--space-md);
+    }
+    .swatch-name {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+      display: block;
+      margin-bottom: 2px;
+    }
+    .swatch-hex {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+      display: block;
+    }
+    .swatch-use {
+      font-size: 11px;
+      color: var(--text-secondary);
+      display: block;
+      margin-top: 2px;
+    }
+
+    /* graph palette row */
+    .graph-palette { display: flex; gap: var(--space-md); flex-wrap: wrap; margin-top: var(--space-lg); }
+    .graph-chip {
+      display: flex; align-items: center; gap: var(--space-sm);
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid rgba(185,192,193,0.08);
+    }
+    .graph-chip-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .graph-chip-label { font-size: 13px; color: var(--text-secondary); }
+    .graph-chip-val  { font-family: var(--font-mono); font-size: 12px; color: var(--text-primary); margin-left: 4px; }
+
+    /* ── TYPOGRAPHY ── */
+    .type-scale { display: flex; flex-direction: column; gap: var(--space-lg); }
+    .type-row {
+      display: flex; align-items: baseline; gap: var(--space-xl);
+      padding: var(--space-md) 0;
+      border-bottom: 1px solid rgba(185,192,193,0.06);
+    }
+    .type-meta {
+      width: 160px; flex-shrink: 0;
+    }
+    .type-meta .token {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+      display: block;
+    }
+    .type-meta .size {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--accent);
+      margin-top: 2px;
+      display: block;
+    }
+    .type-sample { color: var(--text-primary); }
+
+    /* ── SPACING ── */
+    .spacing-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+    .spacing-row {
+      display: flex; align-items: center; gap: var(--space-md);
+    }
+    .spacing-token {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      width: 80px; flex-shrink: 0;
+    }
+    .spacing-bar-wrap {
+      flex: 1; height: 20px; display: flex; align-items: center;
+    }
+    .spacing-bar {
+      height: 8px;
+      background: var(--bg-secondary);
+      border-radius: 4px;
+      border-right: 2px solid var(--graph-pos);
+      transition: width 0.3s ease;
+    }
+    .spacing-val {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-primary);
+      width: 40px; flex-shrink: 0; text-align: right;
+    }
+
+    /* ── GRAPH DEMO ── */
+    .graph-demo {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: var(--space-lg);
+      border: 1px solid rgba(185,192,193,0.08);
+    }
+    .graph-demo-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-secondary);
+      letter-spacing: 0.08em;
+      margin-bottom: var(--space-md);
+    }
+    svg.graph { width: 100%; overflow: visible; }
+
+    /* ── INTERACTION TOKENS ── */
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: var(--space-md);
+    }
+    .token-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: var(--space-md) var(--space-lg);
+      border: 1px solid rgba(185,192,193,0.08);
+    }
+    .token-card .tk { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); letter-spacing: 0.06em; display: block; margin-bottom: 4px; }
+    .token-card .tv { font-family: var(--font-mono); font-size: 16px; color: var(--text-primary); display: block; }
+
+    /* ── COMPONENT RULES ── */
+    .rules-list { display: flex; flex-direction: column; gap: var(--space-sm); }
+    .rule-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: var(--space-md) var(--space-lg);
+      background: var(--bg-secondary);
+      border-radius: 8px;
+      border: 1px solid rgba(185,192,193,0.06);
+    }
+    .rule-label { font-size: 14px; color: var(--text-secondary); }
+    .rule-value { font-family: var(--font-mono); font-size: 13px; color: var(--text-primary); }
+
+    /* ── ALLOWED / FORBIDDEN ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+    .af-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: var(--space-lg);
+      border: 1px solid rgba(185,192,193,0.08);
+    }
+    .af-card h4 {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-md);
+    }
+    .af-card.allowed h4 { color: var(--graph-pos); }
+    .af-card.forbidden h4 { color: var(--accent); }
+    .af-card ul { list-style: none; display: flex; flex-direction: column; gap: var(--space-xs); }
+    .af-card ul li {
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding: var(--space-xs) 0;
+      border-bottom: 1px solid rgba(185,192,193,0.06);
+      display: flex; align-items: center; gap: var(--space-sm);
+    }
+    .af-card ul li::before { font-size: 10px; }
+    .af-card.allowed ul li::before { content: '↗'; color: var(--graph-pos); }
+    .af-card.forbidden ul li::before { content: '✕'; color: var(--accent); }
+
+    /* ── MOOD BOARD ── */
+    .mood-words {
+      display: flex; flex-wrap: wrap; gap: var(--space-sm);
+    }
+    .mood-word {
+      font-size: 13px;
+      padding: 6px var(--space-md);
+      border-radius: 100px;
+      border: 1px solid rgba(185,192,193,0.18);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      letter-spacing: 0.04em;
+    }
+    .mood-word.positive { border-color: var(--graph-pos); color: var(--graph-pos); }
+    .mood-word.negative { border-color: var(--accent); color: var(--accent); opacity: 0.6; }
+
+    /* ── ACCESSIBILITY ── */
+    .a11y-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--space-md); }
+    .a11y-card {
+      background: var(--bg-secondary);
+      border-radius: var(--radius);
+      padding: var(--space-lg);
+      border: 1px solid rgba(185,192,193,0.08);
+      text-align: center;
+    }
+    .a11y-card .big { font-family: var(--font-mono); font-size: 28px; color: var(--text-primary); display: block; margin-bottom: var(--space-sm); }
+    .a11y-card .label { font-size: 12px; color: var(--text-secondary); }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 80px;
+      padding-top: var(--space-xl);
+      border-top: 1px solid rgba(185,192,193,0.1);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: var(--space-md);
+    }
+    footer .logo { font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+    footer .logo span { color: var(--accent); }
+    footer small { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); letter-spacing: 0.06em; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .section { animation: fadeUp 0.5s ease-in-out both; }
+    .section:nth-child(2)  { animation-delay: 0.05s; }
+    .section:nth-child(3)  { animation-delay: 0.10s; }
+    .section:nth-child(4)  { animation-delay: 0.15s; }
+    .section:nth-child(5)  { animation-delay: 0.20s; }
+    .section:nth-child(6)  { animation-delay: 0.25s; }
+    .section:nth-child(7)  { animation-delay: 0.30s; }
+    .section:nth-child(8)  { animation-delay: 0.35s; }
+    .section:nth-child(9)  { animation-delay: 0.40s; }
+
+    /* line draw animation */
+    .graph-path { stroke-dasharray: 800; stroke-dashoffset: 800; animation: drawLine 1.4s ease-in-out 0.6s forwards; }
+    @keyframes drawLine { to { stroke-dashoffset: 0; } }
+
+    @media (max-width: 600px) {
+      .page { padding: var(--space-xl) var(--space-md); }
+      .two-col { grid-template-columns: 1fr; }
+      .type-row { flex-direction: column; gap: var(--space-sm); }
+      .type-meta { width: auto; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-label">Design System — MVP</p>
+    <h1>Beton<span>Me</span></h1>
+    <p class="hero-sub">Sistema di design tokens, regole visive e componenti per la generazione di interfacce coerenti con la filosofia del prodotto: osservazione calma della traiettoria personale nel tempo.</p>
+  </div>
+
+  <!-- 1. PRINCIPLES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">Core Principles</span>
+    </div>
+    <div class="principles-grid">
+      <div class="principle-card"><p>Graph-first interface — il grafico è l'elemento primario di ogni schermata.</p></div>
+      <div class="principle-card"><p>Mobile-first layout — progettato per il 99% di utilizzo su dispositivi mobili.</p></div>
+      <div class="principle-card"><p>Low information density — massimo 3–4 componenti per schermata.</p></div>
+      <div class="principle-card"><p>Calm &amp; contemplative — l'interfaccia è uno specchio, non un giudice.</p></div>
+      <div class="principle-card"><p>No gamification — niente badge, streak o reward popup.</p></div>
+      <div class="principle-card"><p>Numbers secondary — i numeri sono opzionali e nascosti di default.</p></div>
+    </div>
+  </div>
+
+  <!-- 2. COLORS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Color Tokens</span>
+    </div>
+    <div class="colors-grid">
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#0F2F33;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">color.bg.primary</span>
+          <span class="swatch-hex">#0F2F33</span>
+          <span class="swatch-use">Main background</span>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#1F4A50;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">color.bg.secondary</span>
+          <span class="swatch-hex">#1F4A50</span>
+          <span class="swatch-use">Cards, containers</span>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#F4F4F2; border-bottom:1px solid rgba(0,0,0,0.06);"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">color.bg.neutral</span>
+          <span class="swatch-hex">#F4F4F2</span>
+          <span class="swatch-use">Modals, surfaces</span>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#EAEAEA;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">color.text.primary</span>
+          <span class="swatch-hex">#EAEAEA</span>
+          <span class="swatch-use">Primary text</span>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#B9C0C1;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">color.text.secondary</span>
+          <span class="swatch-hex">#B9C0C1</span>
+          <span class="swatch-use">Secondary text</span>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="swatch-block" style="background:#E24A4A;"></div>
+        <div class="swatch-info">
+          <span class="swatch-name">color.accent.primary</span>
+          <span class="swatch-hex">#E24A4A</span>
+          <span class="swatch-use">Highlights (sparingly)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- graph palette -->
+    <div style="margin-top:var(--space-xl);">
+      <p style="font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:var(--space-md);">Graph Palette</p>
+      <div class="graph-palette">
+        <div class="graph-chip">
+          <div class="graph-chip-dot" style="background:#7DA3A0;"></div>
+          <span class="graph-chip-label">color.graph.positive</span>
+          <span class="graph-chip-val">#7DA3A0</span>
+        </div>
+        <div class="graph-chip">
+          <div class="graph-chip-dot" style="background:#8C9496;"></div>
+          <span class="graph-chip-label">color.graph.neutral</span>
+          <span class="graph-chip-val">#8C9496</span>
+        </div>
+        <div class="graph-chip">
+          <div class="graph-chip-dot" style="background:#BFA37A;"></div>
+          <span class="graph-chip-label">color.graph.decline</span>
+          <span class="graph-chip-val">#BFA37A</span>
+        </div>
+      </div>
+      <p style="margin-top:var(--space-md);font-size:12px;color:var(--text-secondary);line-height:1.6;">I colori del grafico devono essere desaturati. Evitare il rosso aggressivo per il feedback negativo. L'accent color è riservato a selezioni e highlight.</p>
+    </div>
+  </div>
+
+  <!-- 3. TYPOGRAPHY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">Typography Tokens</span>
+    </div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:var(--space-xl);">Font preferiti: <strong style="color:var(--text-primary);">Inter · SF Pro · Source Sans</strong></p>
+    <div class="type-scale">
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="token">font.size.title</span>
+          <span class="size">28px · weight 600</span>
+        </div>
+        <span class="type-sample" style="font-size:28px;font-weight:600;letter-spacing:-0.01em;">Traiettoria</span>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="token">font.size.section</span>
+          <span class="size">18px · weight 500</span>
+        </div>
+        <span class="type-sample" style="font-size:18px;font-weight:500;text-transform:uppercase;letter-spacing:0.04em;">Salute / Movimento</span>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="token">font.size.body</span>
+          <span class="size">16px · weight 400</span>
+        </div>
+        <span class="type-sample" style="font-size:16px;font-weight:400;">Osserva la direzione delle tue azioni nel tempo.</span>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="token">font.size.secondary</span>
+          <span class="size">14px · weight 400</span>
+        </div>
+        <span class="type-sample" style="font-size:14px;color:var(--text-secondary);">Ultimi 30 giorni · Trend in crescita</span>
+      </div>
+      <div class="type-row">
+        <div class="type-meta">
+          <span class="token">font.size.caption</span>
+          <span class="size">12px · weight 400</span>
+        </div>
+        <span class="type-sample" style="font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);">Lun · Mar · Mer · Gio · Ven · Sab · Dom</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. SPACING -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Spacing Tokens</span>
+    </div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:var(--space-xl);">Base unit: <strong style="font-family:var(--font-mono);color:var(--text-primary);">8px</strong>. Layout verticale mobile-first.</p>
+    <div class="spacing-list">
+      <div class="spacing-row">
+        <span class="spacing-token">space.xs</span>
+        <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:4px;"></div></div>
+        <span class="spacing-val">4px</span>
+      </div>
+      <div class="spacing-row">
+        <span class="spacing-token">space.sm</span>
+        <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:8px;"></div></div>
+        <span class="spacing-val">8px</span>
+      </div>
+      <div class="spacing-row">
+        <span class="spacing-token">space.md</span>
+        <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:16px;"></div></div>
+        <span class="spacing-val">16px</span>
+      </div>
+      <div class="spacing-row">
+        <span class="spacing-token">space.lg</span>
+        <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:24px;"></div></div>
+        <span class="spacing-val">24px</span>
+      </div>
+      <div class="spacing-row">
+        <span class="spacing-token">space.xl</span>
+        <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:32px;"></div></div>
+        <span class="spacing-val">32px</span>
+      </div>
+      <div class="spacing-row">
+        <span class="spacing-token">space.xxl</span>
+        <div class="spacing-bar-wrap"><div class="spacing-bar" style="width:48px;"></div></div>
+        <span class="spacing-val">48px</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. GRAPH -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Graph Tokens</span>
+    </div>
+    <div class="token-grid" style="margin-bottom:var(--space-xl);">
+      <div class="token-card">
+        <span class="tk">graph.line.width</span>
+        <span class="tv">2px</span>
+      </div>
+      <div class="token-card">
+        <span class="tk">graph.line.curve</span>
+        <span class="tv">smooth</span>
+      </div>
+      <div class="token-card">
+        <span class="tk">graph.animation</span>
+        <span class="tv">300ms</span>
+      </div>
+      <div class="token-card">
+        <span class="tk">graph.grid.opacity</span>
+        <span class="tv">0.1</span>
+      </div>
+      <div class="token-card">
+        <span class="tk">layout.graph.height</span>
+        <span class="tv">50–60vh</span>
+      </div>
+      <div class="token-card">
+        <span class="tk">layout.card.radius</span>
+        <span class="tv">12px</span>
+      </div>
+    </div>
+
+    <!-- live graph demo -->
+    <div class="graph-demo">
+      <p class="graph-demo-label">// trajectory demo — health / movement</p>
+      <svg class="graph" viewBox="0 0 600 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- grid lines -->
+        <line x1="0" y1="45"  x2="600" y2="45"  stroke="#B9C0C1" stroke-opacity="0.1" stroke-width="1"/>
+        <line x1="0" y1="90"  x2="600" y2="90"  stroke="#B9C0C1" stroke-opacity="0.1" stroke-width="1"/>
+        <line x1="0" y1="135" x2="600" y2="135" stroke="#B9C0C1" stroke-opacity="0.1" stroke-width="1"/>
+        <!-- area fill -->
+        <path d="M0 155 C30 140 60 120 100 108 C130 98 160 85 200 78 C240 71 270 65 310 55 C350 45 380 40 420 35 C460 30 490 28 540 25 C560 24 580 22 600 20 L600 180 L0 180 Z"
+              fill="url(#grad)" opacity="0.18"/>
+        <!-- main line -->
+        <path class="graph-path"
+              d="M0 155 C30 140 60 120 100 108 C130 98 160 85 200 78 C240 71 270 65 310 55 C350 45 380 40 420 35 C460 30 490 28 540 25 C560 24 580 22 600 20"
+              stroke="#7DA3A0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- dots -->
+        <circle cx="100" cy="108" r="3" fill="#7DA3A0" opacity="0.7"/>
+        <circle cx="200" cy="78"  r="3" fill="#7DA3A0" opacity="0.7"/>
+        <circle cx="310" cy="55"  r="3" fill="#7DA3A0" opacity="0.7"/>
+        <circle cx="420" cy="35"  r="3" fill="#7DA3A0" opacity="0.7"/>
+        <circle cx="540" cy="25"  r="4" fill="#7DA3A0"/>
+        <!-- x-axis labels -->
+        <text x="0"   y="175" font-family="DM Mono,monospace" font-size="10" fill="#8C9496">Gen</text>
+        <text x="90"  y="175" font-family="DM Mono,monospace" font-size="10" fill="#8C9496">Feb</text>
+        <text x="190" y="175" font-family="DM Mono,monospace" font-size="10" fill="#8C9496">Mar</text>
+        <text x="300" y="175" font-family="DM Mono,monospace" font-size="10" fill="#8C9496">Apr</text>
+        <text x="410" y="175" font-family="DM Mono,monospace" font-size="10" fill="#8C9496">Mag</text>
+        <text x="530" y="175" font-family="DM Mono,monospace" font-size="10" fill="#8C9496">Giu</text>
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#7DA3A0"/>
+            <stop offset="100%" stop-color="#7DA3A0" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <p style="margin-top:var(--space-md);font-size:12px;color:var(--text-secondary);">I grafici non devono assomigliare ad analytics dashboard. Curve smooth, linee sottili, animazione sottile, griglia quasi invisibile.</p>
+  </div>
+
+  <!-- 6. INTERACTION -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Interaction Tokens</span>
+    </div>
+    <div class="token-grid" style="margin-bottom:var(--space-xl);">
+      <div class="token-card">
+        <span class="tk">motion.fast</span>
+        <span class="tv">200ms</span>
+      </div>
+      <div class="token-card">
+        <span class="tk">motion.normal</span>
+        <span class="tv">300ms</span>
+      </div>
+      <div class="token-card">
+        <span class="tk">motion.slow</span>
+        <span class="tv">400ms</span>
+      </div>
+      <div class="token-card">
+        <span class="tk">motion.easing</span>
+        <span class="tv">ease-in-out</span>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="af-card allowed">
+        <h4>Feedback Permesso</h4>
+        <ul>
+          <li>Animazione aggiornamento grafico</li>
+          <li>Transizione colore</li>
+          <li>Cambio sottile di stato UI</li>
+        </ul>
+      </div>
+      <div class="af-card forbidden">
+        <h4>Feedback Vietato</h4>
+        <ul>
+          <li>Confetti</li>
+          <li>Badge e reward popup</li>
+          <li>Streak celebrations</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. COMPONENT DENSITY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Component Density Rules</span>
+    </div>
+    <div class="rules-list">
+      <div class="rule-row">
+        <span class="rule-label">Componenti per schermata</span>
+        <span class="rule-value">max 4</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-label">Priorità grafico</span>
+        <span class="rule-value">highest</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-label">Priorità numeri</span>
+        <span class="rule-value">optional</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-label">Step interazione</span>
+        <span class="rule-value">≤ 3</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-label">Tap target minimo</span>
+        <span class="rule-value">44px</span>
+      </div>
+      <div class="rule-row">
+        <span class="rule-label">Container padding</span>
+        <span class="rule-value">16px</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 8. ACCESSIBILITY -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">Accessibility Tokens</span>
+    </div>
+    <div class="a11y-grid">
+      <div class="a11y-card">
+        <span class="big">4.5:1</span>
+        <span class="label">Contrasto minimo</span>
+      </div>
+      <div class="a11y-card">
+        <span class="big">44px</span>
+        <span class="label">Tap target minimo</span>
+      </div>
+      <div class="a11y-card">
+        <span class="big">On</span>
+        <span class="label">Font scaling abilitato</span>
+      </div>
+    </div>
+    <p style="margin-top:var(--space-lg);font-size:13px;color:var(--text-secondary);">Il trend non deve fare affidamento solo sul colore. Usare sempre: slope della curva · posizione · colore.</p>
+  </div>
+
+  <!-- 9. UI MOOD -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">UI Mood</span>
+    </div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:var(--space-lg);">L'interfaccia deve sembrare:</p>
+    <div class="mood-words" style="margin-bottom:var(--space-xl);">
+      <span class="mood-word positive">visual journal</span>
+      <span class="mood-word positive">observation dashboard</span>
+      <span class="mood-word positive">trajectory viewer</span>
+      <span class="mood-word positive">calm</span>
+      <span class="mood-word positive">reflective</span>
+      <span class="mood-word positive">spacious</span>
+      <span class="mood-word positive">neutral</span>
+    </div>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:var(--space-lg);">L'interfaccia <em>non</em> deve assomigliare a:</p>
+    <div class="mood-words">
+      <span class="mood-word negative">fitness app</span>
+      <span class="mood-word negative">productivity tracker</span>
+      <span class="mood-word negative">SaaS analytics</span>
+      <span class="mood-word negative">gamified habits</span>
+      <span class="mood-word negative">social comparison</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="logo">Beton<span>Me</span></div>
+    <small>Brand System — MVP · Design Tokens v1.0</small>
+  </footer>
+
+</div>
+</body>
+</html>
