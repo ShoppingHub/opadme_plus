@@ -85,8 +85,11 @@ betonme/
 │   ├── progress/
 │   │   ├── epic-12-progress.md      ← Progress: osservazione traiettoria globale
 │   │   └── stories.md
-│   └── rebrand/
-│       └── stories.md               ← rename BetonMe → opad.me + wordmark colori
+│   ├── rebrand/
+│   │   └── stories.md               ← rename BetonMe → opad.me + wordmark colori
+│   └── google-tasks/
+│       ├── epic-13-google-tasks.md   ← Google Tasks sync bidirezionale
+│       └── stories.md
 │
 ├── lovable/
 │   └── prompt-iniziale.md           ← prompt di setup iniziale per Lovable

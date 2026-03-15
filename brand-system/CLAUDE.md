@@ -37,3 +37,15 @@ Wordmark "pad":   #FFFFFF  (solo logo)
 Wordmark ".me":   #B5453A  (solo logo)
 Font:          Inter · radius 12px · motion 300ms ease-in-out
 ```
+
+---
+
+## Multi-theme
+
+L'app supporta **4 palette** (teal, ocean, sunset, forest) + **dark/light/system** mode.
+
+- I token hardcoded sopra si riferiscono alla palette **Teal** (default)
+- Tutte le palette rispettano il mood "calm, neutral, observational"
+- Tutte le palette garantiscono contrasto 4.5:1 minimo
+- Colori grafico restano desaturati in tutte le palette
+- Vedi sezione 2.7 di `brand_system.md` per dettagli

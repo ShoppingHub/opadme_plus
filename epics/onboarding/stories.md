@@ -14,7 +14,7 @@ story-01-03 → Completamento onboarding → salvataggio su Supabase → redirec
 
 ## story-01-01 — Step 2: selezione aree
 
-BetonMe è un'app di osservazione del benessere personale. Costruisci lo Step 2 dell'onboarding (route `/onboarding/areas`).
+opad.me è un'app di osservazione del benessere personale. Costruisci lo Step 2 dell'onboarding (route `/onboarding/areas`).
 
 **Cosa mostra:**
 - Header: `"What do you want to observe?"`
@@ -41,7 +41,7 @@ BetonMe è un'app di osservazione del benessere personale. Costruisci lo Step 2 
 
 ## story-01-02 — Step 3: frequenza per area
 
-Continua l'onboarding di BetonMe. Costruisci lo Step 3 (route `/onboarding/frequency`).
+Continua l'onboarding di opad.me. Costruisci lo Step 3 (route `/onboarding/frequency`).
 
 **Cosa mostra:**
 - Per ogni area selezionata nello Step 2: una riga con nome dell'area e uno stepper
@@ -62,7 +62,7 @@ Continua l'onboarding di BetonMe. Costruisci lo Step 3 (route `/onboarding/frequ
 
 ## story-01-03 — Completamento onboarding
 
-Continua l'onboarding di BetonMe. Implementa il salvataggio dei dati e il redirect finale.
+Continua l'onboarding di opad.me. Implementa il salvataggio dei dati e il redirect finale.
 
 **Behavior al tap su `"Start observing"`:**
 1. CTA mostra spinner + opacity ridotta (stato loading)

@@ -2,7 +2,7 @@
 
 ## Obiettivo
 
-Offrire all'utente uno strumento semplice per gestire la propria **scheda palestra strutturata** e registrare i carichi sessione per sessione — senza trasformare BetonMe in una fitness app.
+Offrire all'utente uno strumento semplice per gestire la propria **scheda palestra strutturata** e registrare i carichi sessione per sessione — senza trasformare opad.me in una fitness app.
 
 L'interazione principale è una **checklist rapida**: l'utente apre l'app, vede gli esercizi del giorno con i carichi abituali, spunta quelli completati. Fine.
 

@@ -1,4 +1,4 @@
-# Stories — Rebrand: BetonMe → opad.me
+# Stories — Rebrand: opad.me → opad.me
 
 ## Sequenza di implementazione
 
@@ -10,13 +10,13 @@ story-rebrand-01 → Rename app + aggiorna wordmark con nuovi colori logo   ⏳ 
 
 ## story-rebrand-01 — Rename app e wordmark opad.me
 
-L'app cambia nome da **BetonMe** a **opad.me**. Aggiorna tutto il codebase con il nuovo nome e il nuovo stile del wordmark.
+L'app cambia nome da **opad.me** a **opad.me**. Aggiorna tutto il codebase con il nuovo nome e il nuovo stile del wordmark.
 
 ---
 
 ### 1. Rename globale
 
-Sostituisci tutte le occorrenze di `"BetonMe"` con `"opad.me"` in:
+Sostituisci tutte le occorrenze di `"opad.me"` con `"opad.me"` in:
 - `<title>` del documento HTML
 - Meta tags (`og:title`, `og:site_name`, ecc.)
 - Header della Dashboard e di ogni pagina che mostra il nome app
@@ -43,8 +43,8 @@ opad  .me
 - Non usare `#B5453A` in nessun altro elemento dell'UI — è esclusivo del wordmark
 
 **Posizioni dove appare il wordmark:**
-- Sidebar desktop: in cima, dove ora c'è `"BetonMe"` (testo)
-- Header mobile della Home: a sinistra, dove ora c'è `"BetonMe"` (testo)
+- Sidebar desktop: in cima, dove ora c'è `"opad.me"` (testo)
+- Header mobile della Home: a sinistra, dove ora c'è `"opad.me"` (testo)
 
 ---
 

@@ -120,7 +120,7 @@ Ogni route dell'app principale (`/dashboard`, `/areas`, `/finance`, `/settings`)
 ┌─────────────────────────────┐
 │                             │
 │                             │
-│          BetonMe            │  ← Logo / wordmark, centrato
+│          opad.me            │  ← Logo / wordmark, centrato
 │   "Observe your direction." │  ← Tagline, text-secondary
 │                             │
 │                             │

@@ -20,7 +20,7 @@ Implementata in `story-07-02` — vedi `epics/settings/stories.md`.
 
 ## story-08-02 — Rilevamento lingua browser
 
-BetonMe è un'app di osservazione del benessere. Implementa il rilevamento automatico della lingua al primo accesso.
+opad.me è un'app di osservazione del benessere. Implementa il rilevamento automatico della lingua al primo accesso.
 
 **Behavior:**
 - All'apertura dell'app, se l'utente non è ancora autenticato → rileva `navigator.language` del browser
@@ -33,7 +33,7 @@ BetonMe è un'app di osservazione del benessere. Implementa il rilevamento autom
 
 ## story-08-03 — Traduzione IT/EN completa
 
-BetonMe è un'app di osservazione del benessere. Implementa la traduzione completa di tutti i testi dell'app in italiano e inglese.
+opad.me è un'app di osservazione del benessere. Implementa la traduzione completa di tutti i testi dell'app in italiano e inglese.
 
 **Scope della traduzione (tutte le schermate):**
 

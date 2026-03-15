@@ -14,7 +14,7 @@ story-06-03 → Empty states (nessuna area Finance / nessun check-in)
 
 ## story-06-01 — Layout Finance con grafico storico
 
-BetonMe è un'app di osservazione del benessere. Costruisci la schermata Finance (route `/finance`).
+opad.me è un'app di osservazione del benessere. Costruisci la schermata Finance (route `/finance`).
 
 **Cosa mostra:**
 - Header: `"Finance"`
@@ -37,7 +37,7 @@ BetonMe è un'app di osservazione del benessere. Costruisci la schermata Finance
 
 ## story-06-02 — Linea di proiezione tratteggiata
 
-Continua Epic 06 di BetonMe. Aggiungi la proiezione lineare al grafico Finance.
+Continua Epic 06 di opad.me. Aggiungi la proiezione lineare al grafico Finance.
 
 **Behavior:**
 - Calcola una regressione lineare semplice sugli ultimi 30 punti dati di `cumulative_score` disponibili
@@ -57,7 +57,7 @@ Continua Epic 06 di BetonMe. Aggiungi la proiezione lineare al grafico Finance.
 
 ## story-06-03 — Empty states Finance
 
-Continua Epic 06 di BetonMe. Aggiungi gli empty state per la schermata Finance.
+Continua Epic 06 di opad.me. Aggiungi gli empty state per la schermata Finance.
 
 **Empty state 1 — Nessuna area Finance creata:**
 - Icona BarChart2 (Lucide), 48px, colore muted

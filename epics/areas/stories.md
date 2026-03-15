@@ -16,7 +16,7 @@ story-10-05 → Badge totale giornaliero nelle card Reduce quantitative         
 
 ## story-10-01 — Layout sezione Aree con 4 macro-categorie
 
-BetonMe è un'app di osservazione del benessere. Sostituisci il placeholder della pagina Areas (route `/areas`) con il layout completo.
+opad.me è un'app di osservazione del benessere. Sostituisci il placeholder della pagina Areas (route `/areas`) con il layout completo.
 
 **Struttura:**
 - Header: `"Aree" / "Areas"` + icona `+` in alto a destra (CTA globale)
@@ -44,7 +44,7 @@ BetonMe è un'app di osservazione del benessere. Sostituisci il placeholder dell
 
 ## story-10-02 — CTA aggiungi
 
-Continua Epic 10 di BetonMe. Aggiungi le CTA per creare nuove aree.
+Continua Epic 10 di opad.me. Aggiungi le CTA per creare nuove aree.
 
 **CTA per tipo (in fondo a ogni sezione):**
 - Label IT: `+ Aggiungi` / EN: `+ Add`
@@ -58,7 +58,7 @@ Continua Epic 10 di BetonMe. Aggiungi le CTA per creare nuove aree.
 
 ## story-10-03 — Stati empty, loading e aree archiviate
 
-Continua Epic 10 di BetonMe. Gestisci gli stati speciali della sezione Aree.
+Continua Epic 10 di opad.me. Gestisci gli stati speciali della sezione Aree.
 
 **Macro-area senza aree (empty per quel tipo):**
 - Non mostrare card — mostrare solo la CTA `+ Aggiungi / + Add`
@@ -79,7 +79,7 @@ Continua Epic 10 di BetonMe. Gestisci gli stati speciali della sezione Aree.
 
 ## story-10-04 — Rename route e label
 
-Continua Epic 10 di BetonMe. Aggiorna la route e il label della sezione Aree per allinearlo all'architettura di navigazione v2.
+Continua Epic 10 di opad.me. Aggiorna la route e il label della sezione Aree per allinearlo all'architettura di navigazione v2.
 
 **Dipende da:** story-09-04 (refactor nav con `useNavConfig`)
 
@@ -103,7 +103,7 @@ Continua Epic 10 di BetonMe. Aggiorna la route e il label della sezione Aree per
 
 ## story-10-05 — Badge totale giornaliero nelle card Reduce quantitative ⏳
 
-Continua Epic 10 di BetonMe. Aggiorna le card delle aree `quantity_reduce` nella sezione Riduci / Reduce per mostrare il totale di oggi accanto al nome.
+Continua Epic 10 di opad.me. Aggiorna le card delle aree `quantity_reduce` nella sezione Riduci / Reduce per mostrare il totale di oggi accanto al nome.
 
 **Condizione:**
 - L'area ha `tracking_mode = 'quantity_reduce'`

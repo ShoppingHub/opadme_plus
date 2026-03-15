@@ -69,7 +69,7 @@ Con 5° tab abilitato:
 |---|---|
 | Larghezza | 240px fissa |
 | Background | `#0F2F33` |
-| Logo / nome app | In cima alla sidebar, `BetonMe` |
+| Logo / nome app | In cima alla sidebar, `opad.me` |
 | Voci nav | Icona + label testuale (su mobile solo icona) |
 | Icone | Lucide outline 20px |
 | Colore voce attiva | `#7DA3A0` |

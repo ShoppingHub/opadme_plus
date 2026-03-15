@@ -39,7 +39,7 @@ Non è un habit tracker. Non è un goal-setting tool. È un **sistema di osserva
 | Charts | Recharts |
 | Animations | Framer Motion |
 | Backend | Supabase (auth + database + edge functions) |
-| Auth | Magic link (email only) |
+| Auth | Email/password + Google OAuth + demo mode |
 | State | Zustand o React Context |
 | Mobile breakpoint | 375px primary |
 
@@ -91,6 +91,9 @@ App
 | 11 | Gym Card — scheda palestra | `epic-11-gym.md` | P2 |
 | 12 | Progress — osservazione traiettoria globale | `epic-12-progress.md` | P1 |
 | 13 | Abitudini da ridurre — tracciamento quantitativo | `epics/checkin/epic-03-checkin.md` · `epics/edit_area/epic-05-add-edit-area.md` | P1 |
+| 14 | Google Tasks — sync bidirezionale con Google | `epics/google-tasks/epic-13-google-tasks.md` | P2 |
+| 15 | Theme system — dark/light/system + 4 palette colori | `epics/settings/stories.md` (story-07-08) | P2 |
+| 16 | Demo mode — accesso senza autenticazione | `epics/auth/stories.md` (story-00-08) | P2 |
 
 ---
 

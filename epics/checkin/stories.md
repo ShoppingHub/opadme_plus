@@ -16,7 +16,7 @@ story-03-05 → Integrazione Supabase: tabella habit_quantity_daily + logica di 
 
 ## story-03-01 — CheckInButton: tre stati
 
-BetonMe è un'app di osservazione del benessere. Costruisci il componente `<CheckInButton>` che appare in fondo a ogni `<TrajectoryCard>` nella Dashboard.
+opad.me è un'app di osservazione del benessere. Costruisci il componente `<CheckInButton>` che appare in ogni card attività nella Home.
 
 **Tre stati del bottone:**
 
@@ -42,7 +42,7 @@ BetonMe è un'app di osservazione del benessere. Costruisci il componente `<Chec
 
 ## story-03-02 — Integrazione Supabase: salvataggio check-in e score
 
-Continua l'Epic 03 di BetonMe. Implementa la logica di backend per il check-in.
+Continua l'Epic 03 di opad.me. Implementa la logica di backend per il check-in.
 
 **Al tap su `"Log today"`:**
 1. Transizione a stato loading
@@ -71,12 +71,12 @@ cumulative_score = cumulative_score(ieri) + daily_score
 
 ## story-03-03 — Animazione grafico post check-in
 
-Continua l'Epic 03 di BetonMe. Aggiungi l'animazione del grafico dopo il check-in.
+Continua l'Epic 03 di opad.me. Aggiungi l'animazione del grafico dopo il check-in.
 
 **Behavior:**
-- Dopo il salvataggio riuscito del check-in, i dati del grafico nella `<TrajectoryCard>` si aggiornano
-- Il grafico anima l'aggiornamento con Framer Motion: transizione 300ms ease-in-out
-- Se il colore della linea cambia (per cambio di slope) → il cambio colore avviene con la stessa transizione
+- Dopo il salvataggio riuscito del check-in, la card attività si aggiorna visivamente
+- Transizione Framer Motion 300ms ease-in-out sul cambio stato del bottone
+- Il grafico in Progress si aggiorna al prossimo caricamento (non in real-time)
 
 **Cosa NON fare:**
 - Nessuna animazione che celebri il completamento (nessun pulse, glow, confetti)
@@ -86,7 +86,7 @@ Continua l'Epic 03 di BetonMe. Aggiungi l'animazione del grafico dopo il check-i
 
 ## story-03-04 — QuantityCounter: UI per aree quantity_reduce ⏳
 
-Continua l'Epic 03 di BetonMe. Costruisci il componente `<QuantityCounter>` per le aree con `tracking_mode = quantity_reduce`. Sostituisce il `<CheckInButton>` per questo tipo di area.
+Continua l'Epic 03 di opad.me. Costruisci il componente `<QuantityCounter>` per le aree con `tracking_mode = quantity_reduce`. Sostituisce il `<CheckInButton>` per questo tipo di area.
 
 **Cosa mostra (all'interno della card area in Dashboard / Area Detail):**
 - Testo `"today: N"` — totale giornaliero corrente (N = 0 se nessun dato per oggi)
@@ -117,7 +117,7 @@ Continua l'Epic 03 di BetonMe. Costruisci il componente `<QuantityCounter>` per 
 
 ## story-03-05 — Integrazione Supabase: habit_quantity_daily ⏳
 
-Continua l'Epic 03 di BetonMe. Implementa la persistenza dei dati quantitativi per le aree `quantity_reduce`.
+Continua l'Epic 03 di opad.me. Implementa la persistenza dei dati quantitativi per le aree `quantity_reduce`.
 
 **Tabella da creare: `habit_quantity_daily`**
 ```
