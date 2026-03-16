@@ -223,18 +223,26 @@ Il rosso non viene mai usato per segnalare declino. Il tono non è mai punitivo.
 
 Il grafico adatta la risoluzione temporale al range selezionato, seguendo il pattern delle app di trading (es. dati giornalieri per 1 settimana, settimanali per 6+ mesi).
 
-| Range | Granularità | Punto nel grafico |
+La granularità è determinata dallo **span effettivo dei dati**, non dal nome del range selezionato:
+
+| Span dei dati | Granularità | Punto nel grafico |
 |---|---|---|
-| 15d · 1m · 3m | Giornaliera | `trajectory_state` del singolo giorno |
-| 6m · 1y · All | Settimanale | `trajectory_state` dell'ultimo giorno della settimana |
+| ≤ 90 giorni | Giornaliera | `trajectory_state` del singolo giorno |
+| 91 giorni – 2 anni | Settimanale | `trajectory_state` dell'ultimo giorno della settimana |
+| > 2 anni | Mensile | `trajectory_state` dell'ultimo giorno del mese |
 
-**Perché l'ultimo giorno della settimana e non la media?**
+L'obiettivo è mantenere **30–80 punti visibili** nel grafico, indipendentemente dalla lunghezza della storia dell'utente. Questo gestisce correttamente anche il range "All" che cresce nel tempo.
 
-L'EWMA è già una media pesata esponenziale: il valore del venerdì (o dell'ultimo giorno con dato) incorpora già l'intera storia della settimana con il peso corretto. Usarlo come punto rappresentativo è matematicamente coerente — non è necessario ricalcolare una media dei valori già mediati.
+**Perché usare l'ultimo giorno del periodo e non la media?**
 
-**Calcolo della slope nella vista settimanale:**
+L'EWMA è già una media pesata esponenziale: il valore dell'ultimo giorno del periodo (settimana o mese) incorpora l'intera storia con il peso corretto. Usarlo come punto rappresentativo è matematicamente coerente — non è necessario ricalcolare una media di valori già mediati.
 
-Invece di calcolare la slope sugli ultimi 7 *giorni*, nella vista settimanale si calcola sulle ultime 4 *settimane* (stessa logica, finestra temporale adeguata alla granularità visiva).
+**Calcolo della slope adattivo:**
+
+La finestra della slope si adatta alla granularità per restare proporzionata:
+- Giornaliera → slope sugli ultimi 7 punti (7 giorni)
+- Settimanale → slope sulle ultime 4 settimane
+- Mensile → slope sugli ultimi 3 mesi
 
 ### Range dei valori visualizzati
 

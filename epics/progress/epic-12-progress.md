@@ -88,49 +88,66 @@ function getLineColor(slope: number): string {
 }
 ```
 
-### Granularità adattiva per time range
+### Granularità adattiva
 
-Il grafico usa granularità diversa in base al range selezionato, seguendo il pattern delle app di trading.
+La granularità non dipende dal range selezionato ma dallo **span effettivo dei dati da visualizzare**. Questo gestisce correttamente anche il range "All" che cresce nel tempo.
 
-| Range | Granularità | Dato per punto | Label asse X |
-|---|---|---|---|
-| 15d | Giornaliera | `trajectory_state` del giorno | `"12 mar"` |
-| 1m | Giornaliera | `trajectory_state` del giorno | `"12 mar"` |
-| 3m | Giornaliera | `trajectory_state` del giorno | `"12 mar"` |
-| 6m | Settimanale | `trajectory_state` dell'ultimo giorno della settimana | `"w12"` o `"10 mar"` |
-| 1y | Settimanale | `trajectory_state` dell'ultimo giorno della settimana | `"mar"` o `"w12"` |
-| All | Settimanale | `trajectory_state` dell'ultimo giorno della settimana | `"mar 26"` |
+| Span dei dati | Granularità | Dato per punto |
+|---|---|---|
+| ≤ 90 giorni | Giornaliera | `trajectory_state` del giorno |
+| 91 giorni – 2 anni | Settimanale | `trajectory_state` dell'ultimo giorno della settimana |
+| > 2 anni | Mensile | `trajectory_state` dell'ultimo giorno del mese |
 
-**Rationale:** sopra i 3 mesi, i punti giornalieri diventano rumore visivo. Il valore di fine settimana del `trajectory_state` rappresenta già la sintesi dell'intera settimana (per come funziona l'EWMA).
+**Corrispondenza pratica con i range UI:**
+
+| Range selezionato | Granularità tipica | Punti circa |
+|---|---|---|
+| 15d | Giornaliera | 15 |
+| 1m | Giornaliera | 30 |
+| 3m | Giornaliera | 90 |
+| 6m | Settimanale | 26 |
+| 1y | Settimanale | 52 |
+| All ≤ 2 anni | Settimanale | ≤ 104 |
+| All > 2 anni | Mensile | ~30–60 |
+
+**Rationale:** la granularità è scelta per mantenere 30–80 punti visibili nel grafico, indipendentemente dalla lunghezza della storia. Il valore di fine periodo (settimana o mese) del `trajectory_state` è sufficiente perché l'EWMA incorpora già tutta la storia con il peso corretto — non è necessario ricalcolare una media dei valori già mediati.
 
 ### Tooltip / puntatore
 
 Il tooltip si adatta alla granularità attiva:
 
-**Granularità giornaliera (15d · 1m · 3m):**
+**Granularità giornaliera:**
 ```
 12 mar 2026
 Traiettoria: 0.72
 ```
 
-**Granularità settimanale (6m · 1y · All):**
+**Granularità settimanale:**
 ```
 Settimana del 10 mar 2026
-Tendenza: ↑ in salita    ← direzione calcolata su slope intra-settimanale
+↑ in salita
 Traiettoria: 0.72
 ```
 
-La freccia di tendenza nel tooltip settimanale usa lo stesso criterio della linea:
-- `↑` se slope intra-settimana > 0.1
-- `→` se neutro
+**Granularità mensile:**
+```
+Marzo 2026
+↑ in salita
+Traiettoria: 0.72
+```
+
+La freccia di tendenza (settimanale e mensile) usa la slope intra-periodo:
+- `↑` se slope > 0.1
+- `→` se neutro (tra -0.1 e 0.1)
 - `↓` se slope < -0.1
 
 Non usare colori nel tooltip per indicare direzione — solo il simbolo freccia.
 
 ### Colore linea — adattamento alla granularità
 
-- **Vista giornaliera:** slope calcolata sugli ultimi 7 punti
-- **Vista settimanale:** slope calcolata sulle ultime 4 settimane (stesso calcolo, finestra diversa)
+- **Giornaliera:** slope calcolata sugli ultimi 7 punti
+- **Settimanale:** slope calcolata sulle ultime 4 settimane
+- **Mensile:** slope calcolata sugli ultimi 3 mesi
 
 ---
 
