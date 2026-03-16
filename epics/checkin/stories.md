@@ -40,32 +40,53 @@ opad.me è un'app di osservazione del benessere. Costruisci il componente `<Chec
 
 ---
 
-## story-03-02 — Integrazione Supabase: salvataggio check-in e score
+## story-03-02 — Integrazione Supabase: salvataggio check-in e traiettoria EWMA
 
-Continua l'Epic 03 di opad.me. Implementa la logica di backend per il check-in.
+Continua l'Epic 03 di opad.me. Implementa la logica di backend per il check-in con il modello di traiettoria EWMA.
 
 **Al tap su `"Log today"`:**
 1. Transizione a stato loading
 2. Inserimento record in `checkins`: `{ area_id, user_id, date: oggi (data locale), completed: true }` — constraint UNIQUE(area_id, date) impedisce duplicati
 3. Calcolo e inserimento/aggiornamento in `score_daily`:
 
+**Segnale giornaliero (`daily_score`):**
 ```
 completed = true          → daily_score = +1.0
-primo giorno mancato      → daily_score = 0.0
+primo giorno mancato      → daily_score =  0.0
 secondo giorno mancato    → daily_score = -0.5
 terzo+ giorno mancato     → daily_score = -1.0
+```
 
-cumulative_score = cumulative_score(ieri) + daily_score
+**Stato traiettoria (`trajectory_state`) — modello EWMA:**
+```
+α = 0.08
+trajectory_state_t = trajectory_state_(t-1) + α × (daily_score - trajectory_state_(t-1))
+
+Se non esiste un record precedente per l'area: trajectory_state_(t-1) = 0.0
 ```
 
 4. Transizione a stato completed
 
+**Schema tabella `score_daily` (aggiornato):**
+```
+id                 uuid PK
+area_id            uuid FK → areas.id
+user_id            uuid FK → users.id
+date               date
+daily_score        float    ← segnale giornaliero (+1, 0, -0.5, -1)
+trajectory_state   float    ← stato EWMA calcolato
+consecutive_missed integer
+UNIQUE(area_id, date)
+```
+
 **Edge case:**
 - Errore di rete → il bottone torna a stato idle, errore inline non bloccante a fondo schermata (non un popup)
 - La `date` usata è sempre la data locale del dispositivo dell'utente (non UTC)
+- Se esiste già `cumulative_score` nella tabella: mantenere la colonna per compatibilità ma non usarla nei grafici
 
 **Note:**
-- Il `cumulative_score` alimenta il grafico. Non viene mai mostrato come numero (default `settings_score_visible = false`)
+- Il `trajectory_state` alimenta il grafico. Non viene mai mostrato come numero (default `settings_score_visible = false`)
+- Vedere `architecture/behavioral-trajectory-model.md` per la documentazione completa del modello
 
 ---
 
