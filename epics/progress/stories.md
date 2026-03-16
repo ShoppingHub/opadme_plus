@@ -25,7 +25,7 @@ opad.me è un'app mobile-first di osservazione del benessere. Crea la schermata 
   - EN: `"15d"` · `"1m"` · `"3m"` · `"6m"` · `"1y"` · `"All"`
   - Mappatura giorni: 15, 30, 90, 180, 365, 3650
 - Grafico Recharts `<LineChart>` di altezza 60vh:
-  - Dati: media mobile dei `cumulative_score` di tutte le aree attive dell'utente
+  - Dati: media del `trajectory_state` di tutte le aree attive dell'utente (colonna `trajectory_state` in `score_daily`, calcolata con EWMA α=0.08)
   - Colore linea calcolato da slope ultimi 7 giorni: `#7DA3A0` (salita) / `#8C9496` (neutro) / `#BFA37A` (discesa)
   - Griglia solo orizzontale, `opacity-10`
   - Asse Y nascosto, asse X con tick date, 12px, `#B9C0C1`
@@ -50,7 +50,7 @@ Continua Epic 12 di opad.me. Aggiungi il selettore macro-area sotto il grafico i
 - Pill inattiva: background trasparente, bordo sottile, testo `#B9C0C1`
 
 **Behavior:**
-- Tap macro-area → grafico si aggiorna con la media dei `cumulative_score` delle sole aree di quel tipo
+- Tap macro-area → grafico si aggiorna con la media del `trajectory_state` delle sole aree di quel tipo
 - Tap `Tutto / All` → torna alla media di tutte le aree
 - Se nessun dato per la macro-area selezionata: messaggio IT `"Nessun dato per questa categoria"` / EN `"No data for this category yet"` — nessuna linea piatta, nessun errore
 - La selezione rimane quando si cambia il time range

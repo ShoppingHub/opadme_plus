@@ -110,20 +110,31 @@ Questi stati sono segnali interni — **non vengono visualizzati come giudizio**
 
 ---
 
-## Logica Score (backend)
+## Logica Traiettoria (backend)
 
-Al momento del check-in, viene calcolato e salvato il `score_daily`:
+Al momento del check-in, viene calcolato e salvato il `trajectory_state` in `score_daily`.
+
+Il sistema usa un modello **EWMA (Exponentially Weighted Moving Average)** descritto in dettaglio in `architecture/behavioral-trajectory-model.md`.
+
+### Segnale giornaliero (`daily_score`)
 
 ```
-completed = true  → daily_score = +1.0
-primo giorno mancato  → daily_score = 0.0
-secondo giorno mancato → daily_score = -0.5
-terzo+ giorno mancato  → daily_score = -1.0
-
-cumulative_score = cumulative_score(ieri) + daily_score
+completed = true         → daily_score = +1.0
+primo giorno mancato     → daily_score =  0.0
+secondo giorno mancato   → daily_score = -0.5
+terzo+ giorno mancato    → daily_score = -1.0
 ```
 
-Il `cumulative_score` alimenta il grafico. Non viene mai mostrato come numero (default `settings_score_visible = false`).
+### Stato traiettoria (`trajectory_state`)
+
+```
+trajectory_state_t = trajectory_state_(t-1) + α × (daily_score - trajectory_state_(t-1))
+α = 0.08  (memoria effettiva ≈ 25–30 giorni)
+```
+
+Il `trajectory_state` alimenta il grafico. Non viene mai mostrato come numero (default `settings_score_visible = false`).
+
+> Vedi `architecture/behavioral-trajectory-model.md` per la documentazione completa del modello, la razionale, i valori di riferimento e le note di implementazione.
 
 ---
 
