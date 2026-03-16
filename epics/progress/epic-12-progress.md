@@ -73,10 +73,10 @@ Progress non contiene azioni. Non si fa il check-in qui. Non si gestiscono aree.
 | Componente | Recharts `<LineChart>` |
 | Tipo linea | `type="monotone"` |
 | Dati | Media di `trajectory_state` di tutte le aree attive (o filtrate per macro-area) — vedi `architecture/behavioral-trajectory-model.md` |
-| Colore linea | Slope 7 giorni → `#7DA3A0` / `#8C9496` / `#BFA37A` |
+| Colore linea | Slope del periodo corrente → `#7DA3A0` / `#8C9496` / `#BFA37A` |
 | Griglia | Solo orizzontale, `opacity-10` |
 | Asse Y | Nascosto |
-| Asse X | Tick date, 12px, `#B9C0C1` |
+| Asse X | Tick adattivi (vedi granularità) |
 | Altezza | 60vh |
 | Background | `bg-[#1F4A50] rounded-xl p-4` |
 
@@ -87,6 +87,50 @@ function getLineColor(slope: number): string {
   return '#8C9496';                   // neutro
 }
 ```
+
+### Granularità adattiva per time range
+
+Il grafico usa granularità diversa in base al range selezionato, seguendo il pattern delle app di trading.
+
+| Range | Granularità | Dato per punto | Label asse X |
+|---|---|---|---|
+| 15d | Giornaliera | `trajectory_state` del giorno | `"12 mar"` |
+| 1m | Giornaliera | `trajectory_state` del giorno | `"12 mar"` |
+| 3m | Giornaliera | `trajectory_state` del giorno | `"12 mar"` |
+| 6m | Settimanale | `trajectory_state` dell'ultimo giorno della settimana | `"w12"` o `"10 mar"` |
+| 1y | Settimanale | `trajectory_state` dell'ultimo giorno della settimana | `"mar"` o `"w12"` |
+| All | Settimanale | `trajectory_state` dell'ultimo giorno della settimana | `"mar 26"` |
+
+**Rationale:** sopra i 3 mesi, i punti giornalieri diventano rumore visivo. Il valore di fine settimana del `trajectory_state` rappresenta già la sintesi dell'intera settimana (per come funziona l'EWMA).
+
+### Tooltip / puntatore
+
+Il tooltip si adatta alla granularità attiva:
+
+**Granularità giornaliera (15d · 1m · 3m):**
+```
+12 mar 2026
+Traiettoria: 0.72
+```
+
+**Granularità settimanale (6m · 1y · All):**
+```
+Settimana del 10 mar 2026
+Tendenza: ↑ in salita    ← direzione calcolata su slope intra-settimanale
+Traiettoria: 0.72
+```
+
+La freccia di tendenza nel tooltip settimanale usa lo stesso criterio della linea:
+- `↑` se slope intra-settimana > 0.1
+- `→` se neutro
+- `↓` se slope < -0.1
+
+Non usare colori nel tooltip per indicare direzione — solo il simbolo freccia.
+
+### Colore linea — adattamento alla granularità
+
+- **Vista giornaliera:** slope calcolata sugli ultimi 7 punti
+- **Vista settimanale:** slope calcolata sulle ultime 4 settimane (stesso calcolo, finestra diversa)
 
 ---
 
