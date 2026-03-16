@@ -37,7 +37,8 @@ betonme/
 ├── prd.md                           ← mappa prodotto (snello, solo feature map)
 │
 ├── architecture/
-│   └── navigation-v2.md             ← architettura navigazione v2 (4 tab fisse + 5° opzionale)
+│   ├── navigation-v2.md             ← architettura navigazione v2 (4 tab fisse + 5° opzionale)
+│   └── behavioral-trajectory-model.md ← modello matematico EWMA per la traiettoria comportamentale
 │
 ├── brand-system/
 │   ├── CLAUDE.md                    ← regole d'uso del brand system
@@ -127,5 +128,6 @@ betonme/
 - PRD principale: `prd.md`
 - Brand system: `brand-system/brand_system.md`
 - Architettura navigazione: `architecture/navigation-v2.md`
+- Modello matematico traiettoria: `architecture/behavioral-trajectory-model.md`
 - Anti-pattern UI: sezione 10 del brand system — rispettarli sempre
 - Tono di voce: mai valutativo, mai motivazionale — solo osservativo

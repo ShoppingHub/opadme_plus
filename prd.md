@@ -106,19 +106,29 @@ users        → id, settings_score_visible (default false), settings_notificati
 areas        → id, user_id, name, type, frequency_per_week, archived_at,
                tracking_mode (binary | quantity_reduce), unit_label, baseline_initial, show_quick_add_home
 checkins     → id, area_id, user_id, date, completed — UNIQUE(area_id, date)
-score_daily  → id, area_id, date, daily_score, cumulative_score, consecutive_missed
+score_daily  → id, area_id, date, daily_score, trajectory_state, consecutive_missed
 habit_quantity_daily → id, area_id, date, quantity, source (quick_add | manual_edit | system_init),
                        created_at, updated_at — UNIQUE(area_id, date)
 ```
 
-**Score logic per `tracking_mode = binary` (invariato):**
+**Modello di traiettoria comportamentale per `tracking_mode = binary`:**
+
+Il sistema usa un modello EWMA (Exponentially Weighted Moving Average) che stima la **direzione corrente** del comportamento, non il totale accumulato.
+
 ```
-completed       → +1.0
-primo mancato   →  0.0
-secondo mancato → -0.5
-terzo+ mancato  → -1.0
-cumulative_score = previous + daily_score
+Segnale giornaliero (input_t):
+  completato       → +1.0
+  primo mancato    →  0.0
+  secondo mancato  → -0.5
+  terzo+ mancato   → -1.0
+
+Aggiornamento stato traiettoria:
+  state_t = state_(t-1) + α × (input_t − state_(t-1))
+  α = 0.08  (memoria effettiva ≈ 25–30 giorni)
 ```
+
+Il `trajectory_state` alimenta il grafico. Non viene mai mostrato come numero (default off).
+Vedi specifiche complete in `architecture/behavioral-trajectory-model.md`.
 
 **Evaluation logic per `tracking_mode = quantity_reduce` (interno, non mostrato):**
 ```
@@ -133,7 +143,6 @@ delta = qty_today - reference_qty
 → worsening : qty_today > reference_qty
 ```
 
-> Il `cumulative_score` alimenta il grafico delle aree binarie. Non viene mai mostrato come numero (default off).
 > Le aree `quantity_reduce` mostrano il grafico della quantità giornaliera — non usa `score_daily`.
 
 ---

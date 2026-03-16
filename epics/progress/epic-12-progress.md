@@ -9,7 +9,7 @@ Offrire all'utente una visione storica dell'andamento complessivo del proprio be
 
 ## Behavior
 
-La schermata Progress mostra un unico grafico aggregato che rappresenta l'andamento totale dell'utente — media ponderata dei `cumulative_score` di tutte le aree attive. È il layer di osservazione del prodotto.
+La schermata Progress mostra un unico grafico aggregato che rappresenta l'andamento totale dell'utente — media del `trajectory_state` di tutte le aree attive. Il `trajectory_state` è calcolato con il modello EWMA descritto in `architecture/behavioral-trajectory-model.md`. È il layer di osservazione del prodotto.
 
 Sotto il grafico, un selettore di macro-area permette di filtrare la traiettoria per una singola categoria. Il time range è controllabile con i pill 30d / 90d / 365d.
 
@@ -22,7 +22,7 @@ Progress non contiene azioni. Non si fa il check-in qui. Non si gestiscono aree.
 ### Visualizzazione Progress — Vista Totale
 1. L'utente tappa la tab Progress
 2. Vede il grafico totale aggregato (default: 30d, macro-area: Tutto)
-3. Il grafico usa la media dei `cumulative_score` di tutte le aree attive
+3. Il grafico usa la media del `trajectory_state` di tutte le aree attive
 
 ### Filtro per Macro-area
 1. L'utente tappa una macro-area nel selettore
@@ -72,7 +72,7 @@ Progress non contiene azioni. Non si fa il check-in qui. Non si gestiscono aree.
 |---|---|
 | Componente | Recharts `<LineChart>` |
 | Tipo linea | `type="monotone"` |
-| Dati | Media mobile dei `cumulative_score` di tutte le aree attive (o filtrate per macro-area) |
+| Dati | Media di `trajectory_state` di tutte le aree attive (o filtrate per macro-area) — vedi `architecture/behavioral-trajectory-model.md` |
 | Colore linea | Slope 7 giorni → `#7DA3A0` / `#8C9496` / `#BFA37A` |
 | Griglia | Solo orizzontale, `opacity-10` |
 | Asse Y | Nascosto |
@@ -129,7 +129,7 @@ Il grafico mostra un messaggio testuale "Nessun dato per questa categoria / No d
 ## Acceptance Criteria
 
 - [ ] La tab Progress mostra un unico grafico aggregato
-- [ ] Il grafico usa la media dei `cumulative_score` di tutte le aree attive
+- [ ] Il grafico usa la media del `trajectory_state` (EWMA) di tutte le aree attive
 - [ ] Il MacroAreaSelector ha 5 opzioni nella lingua corrente
 - [ ] La selezione di una macro-area filtra il grafico
 - [ ] `Tutto / All` è l'opzione di default
