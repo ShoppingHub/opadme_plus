@@ -6,6 +6,7 @@
 story-12-01 → Layout Progress: grafico aggregato + TimeRangeSelector          ✅ completata
 story-12-02 → MacroAreaSelector: filtro per macro-area                        ✅ completata
 story-12-03 → Empty state e loading state                                     ✅ completata
+story-12-04 → Granularità adattiva del grafico (giornaliero / settimanale / mensile)
 ```
 
 > **Dipendenze:** Richiede story-09-04 (route `/progress` nella nav). Il codice del grafico aggregato esiste già in `src/pages/Index.tsx` e può essere estratto.
@@ -71,3 +72,58 @@ Continua Epic 12 di opad.me. Aggiungi gli stati speciali della schermata Progres
 - Skeleton `animate-pulse bg-[#1F4A50] rounded-xl h-[60vh]` al posto del grafico
 - Skeleton di 5 pill muted al posto del MacroAreaSelector
 - Il TimeRangeSelector rimane visibile ma non interattivo
+
+---
+
+## story-12-04 — Granularità adattiva del grafico
+
+Continua Epic 12 di opad.me. Aggiorna il grafico Progress in modo che la risoluzione temporale si adatti automaticamente alla quantità di dati visualizzati, come nelle app di trading.
+
+**Regola di granularità** (basata sullo span effettivo dei dati, non sul range selezionato):
+
+| Span | Granularità | Punto nel grafico |
+|---|---|---|
+| ≤ 90 giorni | Giornaliera | `trajectory_state` del giorno |
+| 91 giorni – 2 anni | Settimanale | `trajectory_state` dell'ultimo giorno della settimana |
+| > 2 anni | Mensile | `trajectory_state` dell'ultimo giorno del mese |
+
+Per "ultimo giorno del periodo": se l'utente non ha fatto check-in nell'ultimo giorno della settimana/mese, usare l'ultimo giorno con dato disponibile in quel periodo.
+
+**Tooltip adattivo:**
+
+Giornaliero:
+```
+12 mar 2026
+Traiettoria: 0.72
+```
+
+Settimanale:
+```
+Settimana del 10 mar 2026
+↑ in salita
+Traiettoria: 0.72
+```
+
+Mensile:
+```
+Marzo 2026
+↑ in salita
+Traiettoria: 0.72
+```
+
+La freccia di tendenza (settimanale e mensile) si calcola dalla slope intra-periodo:
+- `↑` slope > 0.1
+- `→` neutro (tra -0.1 e 0.1)
+- `↓` slope < -0.1
+
+Solo simbolo — nessun colore aggiuntivo nel tooltip.
+
+**Colore della linea — slope adattiva:**
+- Giornaliera → slope sugli ultimi 7 punti
+- Settimanale → slope sulle ultime 4 settimane
+- Mensile → slope sugli ultimi 3 mesi
+
+**Asse X — densità tick adattiva:**
+- Giornaliera: tick ogni 7–14 giorni
+- Settimanale: tick ogni 4 settimane circa
+- Mensile: tick ogni 2–3 mesi
