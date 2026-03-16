@@ -131,6 +131,78 @@ opad  .me
 - Su sfondo `#0F2F33` (nav/sidebar): usare il wordmark completo con i colori sopra
 - Quando disponibile, l'icona SVG è sempre in bianco — mai colorata con i token di sistema
 
+### 2.7 Multi-Theme System
+
+L'app supporta **4 palette colori** e **3 modalità tema** (dark/light/system). Il sistema usa CSS custom properties in formato HSL, switchabili tramite attributi `data-palette` e classe `.dark` su `<html>`.
+
+#### Modalità tema
+
+| Modalità | Behavior |
+|---|---|
+| **Dark** (default) | Superfici scure, testo chiaro |
+| **Light** | Superfici chiare, testo scuro |
+| **System** | Segue `prefers-color-scheme` del sistema operativo |
+
+#### 4 Palette colori
+
+| Palette | Primary (dark mode) | Carattere |
+|---|---|---|
+| **Teal** (default) | `#0F2F33` bg, `#7DA3A0` accent | La palette originale del brand — calma, sottomarina |
+| **Ocean** | Tonalità blu profondo | Fresca, marina — stesso mood, toni più freddi |
+| **Sunset** | Tonalità arancio/caldo | Calda, crepuscolare — sensazione di fine giornata |
+| **Forest** | Tonalità verde scuro | Terrosa, naturale — osservazione dalla foresta |
+
+#### Implementazione tecnica
+
+```css
+/* Switch palette via data attribute */
+html[data-palette="teal"] { ... }
+html[data-palette="ocean"] { ... }
+html[data-palette="sunset"] { ... }
+html[data-palette="forest"] { ... }
+
+/* Switch dark/light via class */
+html.dark { ... }
+```
+
+Ogni palette definisce varianti **light** e **dark** complete:
+- background, foreground, card, popover
+- primary, secondary, muted, accent, destructive
+- border, input, ring
+- graph-positive, graph-neutral, graph-decline
+- sidebar, nav-bg
+
+#### Regole multi-theme
+
+| Regola | Vincolo |
+|---|---|
+| Palette default | Teal — tutti i token hardcoded nel brand system si riferiscono a questa palette |
+| Tutte le palette | Devono rispettare il mood "calm, neutral, observational" — nessuna palette vivace o aggressiva |
+| Contrasto | Ogni palette deve garantire 4.5:1 minimo in entrambe le modalità |
+| Persistenza | `localStorage` per hydration istantanea (no flash al reload) |
+| Anti-pattern | I colori del grafico (`graph-positive`, `graph-neutral`, `graph-decline`) rimangono desaturati in TUTTE le palette |
+
+#### CSS Custom Properties (struttura)
+
+```css
+:root[data-palette="teal"] {
+  --background: 192 55% 13%;       /* #0F2F33 equiv */
+  --foreground: 0 0% 92%;          /* #EAEAEA equiv */
+  --card: 189 43% 22%;             /* #1F4A50 equiv */
+  --primary: 174 16% 56%;          /* #7DA3A0 equiv */
+  --graph-positive: 174 16% 56%;
+  --graph-neutral: 195 4% 56%;
+  --graph-decline: 38 30% 62%;
+  /* ... altre variabili ... */
+}
+
+:root[data-palette="teal"].dark {
+  /* varianti dark (stesse di sopra per teal, diverse per altre palette) */
+}
+```
+
+> **Nota per Lovable:** I valori esatti HSL di ogni palette sono definiti nel CSS dell'app (`src/index.css`). Questo documento specifica il framework; l'implementazione dettagliata delle palette è nel codice.
+
 ---
 
 ## 3. Typography
@@ -372,10 +444,14 @@ All states: min-h-[44px] w-full rounded-lg text-[16px] font-medium
 ### 8.3 `<TimeRangeSelector>`
 
 ```
-Options:  30d · 90d · 365d
+Options:  15d · 1m · 3m · 6m · 1y · All
+IT:       15g · 1m · 3m · 6m · 1a · Tutto
+EN:       15d · 1m · 3m · 6m · 1y · All
+Days:     15  · 30 · 90 · 180· 365· 3650
 Active:   bg-[#1F4A50] text-[#EAEAEA] rounded-full px-4 py-1
 Inactive: text-[#B9C0C1] px-4 py-1
-Motion:   Framer Motion layoutId="activeRange" for sliding pill
+Motion:   Framer Motion layoutId="activeRange" for animated sliding pill
+Disabled: opacity-50, non-interactive
 ```
 
 ### 8.4 `<AreaTypePill>`
@@ -522,4 +598,4 @@ NOT:         Gamified. Pressuring. Evaluative.
 
 ---
 
-*opad.me Brand System v1.2 — Ready for Lovable generation*
+*opad.me Brand System v2.0 — Multi-theme + 4 palette — Ready for Lovable generation*

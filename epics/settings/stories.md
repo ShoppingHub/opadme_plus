@@ -10,6 +10,9 @@ story-07-04 → Sezione Menu: voci fisse + max 2 slot custom configurabili      
 story-07-05 → Sign out con redirect                                           ✅ completata
 story-07-06 → Delete account con modale e cascade                             ✅ completata
 story-07-07 → Toggle "Mostra sezione Finanze" + extra_tab_enabled su Supabase ⏳ da fare
+story-07-08 → Theme system: dark/light/system + 4 color palette              ⏳ da fare
+story-07-09 → Sezione Google Tasks: collega/scollega account Google          ⏳ da fare
+story-07-10 → Profile avatar con iniziali/immagine                           ⏳ da fare
 ```
 
 > **Dipendenze:** story-07-07 richiede story-09-04 (hook `useNavConfig`) già implementata.
@@ -18,7 +21,7 @@ story-07-07 → Toggle "Mostra sezione Finanze" + extra_tab_enabled su Supabase 
 
 ## story-07-01 — Layout Settings
 
-BetonMe è un'app di osservazione del benessere. Aggiorna la schermata Settings (route `/settings`) con il nuovo layout a 3 sezioni.
+opad.me è un'app di osservazione del benessere. Aggiorna la schermata Settings (route `/settings`) con il nuovo layout a 3 sezioni.
 
 **Struttura dall'alto verso il basso:**
 
@@ -44,7 +47,7 @@ BetonMe è un'app di osservazione del benessere. Aggiorna la schermata Settings 
 
 ## story-07-02 — Selettore lingua IT/EN
 
-Continua Epic 07 di BetonMe. Implementa il selettore lingua.
+Continua Epic 07 di opad.me. Implementa il selettore lingua.
 
 **Behavior:**
 - Il segmented control mostra `Italiano · English`
@@ -60,7 +63,7 @@ Continua Epic 07 di BetonMe. Implementa il selettore lingua.
 
 ## story-07-03 — Toggle score
 
-Continua Epic 07 di BetonMe. Implementa la logica del toggle "Mostra punteggio / Show trajectory score".
+Continua Epic 07 di opad.me. Implementa la logica del toggle "Mostra punteggio / Show trajectory score".
 
 **Behavior:**
 - Al cambio del toggle → aggiornamento ottimistico di `settings_score_visible` nella tabella `users`
@@ -77,7 +80,7 @@ Story completata nell'implementazione precedente. Sostituita dalla story-07-07 c
 
 ## story-07-05 — Sign out
 
-Continua Epic 07 di BetonMe. Implementa il logout.
+Continua Epic 07 di opad.me. Implementa il logout.
 
 **Behavior:**
 - Tap `"Esci / Sign out"` → `supabase.auth.signOut()`
@@ -89,7 +92,7 @@ Continua Epic 07 di BetonMe. Implementa il logout.
 
 ## story-07-06 — Delete account
 
-Continua Epic 07 di BetonMe. Implementa la cancellazione account.
+Continua Epic 07 di opad.me. Implementa la cancellazione account.
 
 **Behavior:**
 - Tap `"Elimina account / Delete account"` → si apre un modale di conferma
@@ -121,7 +124,7 @@ EN:
 
 ## story-07-07 — Toggle "Mostra sezione Finanze"
 
-Continua Epic 07 di BetonMe. Aggiungi il toggle per abilitare il 5° tab Finance nella navigazione.
+Continua Epic 07 di opad.me. Aggiungi il toggle per abilitare il 5° tab Finance nella navigazione.
 
 **Dipende da:** story-09-04 (hook `useNavConfig` con `extra_tab_enabled` già gestito)
 
@@ -142,3 +145,80 @@ Continua Epic 07 di BetonMe. Aggiungi il toggle per abilitare il 5° tab Finance
 **Edge case:**
 - Utente riapre l'app con `extra_tab_enabled = true` → il tab Finance è già visibile nella nav al caricamento
 - Errore di salvataggio → toggle torna al valore precedente, nessun messaggio
+
+---
+
+## story-07-08 — Theme system: dark/light/system + 4 color palette ⏳
+
+Continua Epic 07 di opad.me. Aggiungi la sezione Aspetto/Appearance in Settings per gestire tema e palette colori.
+
+**Sezione "Aspetto / Appearance" — sopra Preferenze:**
+
+**Modalità tema:**
+- 3 opzioni: `"Chiaro / Light"` · `"Scuro / Dark"` · `"Sistema / System"`
+- Default: `"System"` — segue preferenza OS (`prefers-color-scheme`)
+- Selezione → aggiorna immediatamente l'intera UI senza reload
+- Persistenza: `localStorage` per hydration istantanea
+
+**Palette colori:**
+- 4 opzioni visuali (pallini colorati o card preview):
+  - `"Teal"` (default) — palette attuale
+  - `"Ocean"` — tonalità blu
+  - `"Sunset"` — tonalità arancio/caldo
+  - `"Forest"` — tonalità verde scuro
+- Selezione → aggiorna immediatamente i CSS custom properties
+- Persistenza: `localStorage`
+
+**Implementazione:**
+- Hook `useTheme()` espone: `mode`, `setMode`, `palette`, `setPalette`, `resolvedMode`
+- CSS usa `data-palette` attribute su `<html>` per switch palette
+- Classe `.dark` su `<html>` per dark mode
+- Ogni palette definisce varianti light e dark (HSL CSS custom properties)
+
+### Acceptance criteria
+
+- [ ] 3 modalità tema funzionanti (light/dark/system)
+- [ ] 4 palette colori con switch istantaneo
+- [ ] Persistenza in localStorage (nessun flash al reload)
+- [ ] Sistema detecta `prefers-color-scheme` quando mode = system
+- [ ] Testi localizzati IT/EN
+
+---
+
+## story-07-09 — Sezione Google Tasks in Settings ⏳
+
+Continua Epic 07 di opad.me. Aggiungi la sezione Google Tasks nella schermata Settings.
+
+> **Riferimento completo:** vedi `epics/google-tasks/epic-13-google-tasks.md` e `stories.md` (Story 13-04).
+
+Questa story è un alias della Story 13-04. L'implementazione completa è documentata nell'Epic 13.
+
+**Sintesi:** sezione con 4 stati (non collegato, collegamento in corso, collegato, errore/revocato), CTA per collegare/scollegare, email Google visibile quando collegato, nascosta in demo mode.
+
+---
+
+## story-07-10 — Profile avatar con iniziali/immagine ⏳
+
+Continua Epic 07 di opad.me. Aggiungi un avatar utente visibile nella schermata Settings e nella navigazione.
+
+**Cosa mostra:**
+- Avatar circolare con immagine profilo Google (se disponibile via OAuth) oppure iniziali dell'utente
+- Fallback se nessun dato: icona utente generica (Lucide `User`)
+- Due dimensioni: `"sm"` (32px, nella nav) e `"md"` (64px, in Settings header)
+
+**Posizione:**
+- **Settings:** in cima alla pagina, sopra le sezioni, con nome/email sotto
+- **Mobile (BottomNav):** non presente
+- **Desktop (Sidebar):** in fondo alla sidebar, tap → naviga a `/settings`
+
+**Behavior:**
+- In demo mode: mostra icona generica, non mostra email
+- L'avatar non è modificabile dall'utente in MVP — usa solo i dati di Supabase auth
+
+### Acceptance criteria
+
+- [ ] Avatar mostra immagine profilo Google se disponibile
+- [ ] Fallback a iniziali se nessuna immagine
+- [ ] Fallback a icona generica se nessun dato
+- [ ] Due dimensioni (sm/md) funzionanti
+- [ ] Nascosto/generico in demo mode

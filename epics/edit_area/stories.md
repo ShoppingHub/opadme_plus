@@ -9,6 +9,8 @@ story-05-03 → Stepper frequenza 1–7
 story-05-04 → Integrazione Supabase: creazione area → redirect Dashboard
 story-05-05 → Modalità Edit: form pre-compilato + "Save changes" + "Archive area"
 story-05-06 → Tracking mode per aree Reduce: Binary / Quantity + campi quantitativi
+story-05-07 → Toggle Google Tasks sync per area (solo binary + Google collegato) ⏳ da fare
+story-05-08 → Toggle Gym template per aree Health                               ⏳ da fare
 ```
 
 > **Dipendenze:** Richiede Epic 02 (Dashboard) completato. La nuova area creata deve apparire come card nella Dashboard.
@@ -17,7 +19,7 @@ story-05-06 → Tracking mode per aree Reduce: Binary / Quantity + campi quantit
 
 ## story-05-01 — Form Add Area
 
-BetonMe è un'app di osservazione del benessere. Costruisci la schermata Add Area (route `/areas/new`).
+opad.me è un'app di osservazione del benessere. Costruisci la schermata Add Area (route `/areas/new`).
 
 **Cosa mostra:**
 - Header: `"Add area"` con back navigation verso `/`
@@ -41,7 +43,7 @@ BetonMe è un'app di osservazione del benessere. Costruisci la schermata Add Are
 
 ## story-05-02 — Pill selector tipo area
 
-Continua Epic 05 di BetonMe. Costruisci il componente pill selector per il tipo area.
+Continua Epic 05 di opad.me. Costruisci il componente pill selector per il tipo area.
 
 **4 pill selezionabili (una alla volta):**
 - `"Health"` — stile teal
@@ -62,7 +64,7 @@ Continua Epic 05 di BetonMe. Costruisci il componente pill selector per il tipo 
 
 ## story-05-03 — Stepper frequenza
 
-Continua Epic 05 di BetonMe. Costruisci lo stepper per la frequenza settimanale.
+Continua Epic 05 di opad.me. Costruisci lo stepper per la frequenza settimanale.
 
 **Cosa mostra:**
 - Label: `"How many days per week?"`
@@ -78,7 +80,7 @@ Continua Epic 05 di BetonMe. Costruisci lo stepper per la frequenza settimanale.
 
 ## story-05-04 — Integrazione Supabase: creazione area
 
-Continua Epic 05 di BetonMe. Implementa il salvataggio dell'area su Supabase.
+Continua Epic 05 di opad.me. Implementa il salvataggio dell'area su Supabase.
 
 **Al tap su `"Start observing"`:**
 1. CTA mostra spinner + opacity ridotta (stato loading)
@@ -98,7 +100,7 @@ Continua Epic 05 di BetonMe. Implementa il salvataggio dell'area su Supabase.
 
 ## story-05-05 — Modalità Edit
 
-Continua Epic 05 di BetonMe. Aggiungi la modalità modifica area (route `/areas/:id/edit`).
+Continua Epic 05 di opad.me. Aggiungi la modalità modifica area (route `/areas/:id/edit`).
 
 **Come si accede:**
 - Dal link testuale `"Edit area"` nella schermata Area Detail
@@ -128,7 +130,7 @@ Continua Epic 05 di BetonMe. Aggiungi la modalità modifica area (route `/areas/
 
 ## story-05-06 — Tracking mode per aree Reduce ⏳
 
-Continua Epic 05 di BetonMe. Aggiungi la sezione "tracking mode" che compare solo quando il tipo area selezionato è **Reduce**.
+Continua Epic 05 di opad.me. Aggiungi la sezione "tracking mode" che compare solo quando il tipo area selezionato è **Reduce**.
 
 **Quando compare:**
 - Solo se l'utente ha selezionato la pill tipo `"Reduce"` (in Add o Edit)
@@ -160,3 +162,58 @@ Continua Epic 05 di BetonMe. Aggiungi la sezione "tracking mode" che compare sol
 - Non mostrare questa sezione per aree Health, Study, Finance
 - Non usare linguaggio di obiettivo ("Set your goal", "Target", "Limit")
 - Non aggiungere altri campi non specificati
+
+---
+
+## story-05-07 — Toggle Google Tasks sync per area ⏳
+
+Continua Epic 05 di opad.me. Aggiungi il toggle di sincronizzazione Google Tasks nel form area.
+
+> **Riferimento completo:** vedi `epics/google-tasks/epic-13-google-tasks.md` (Story 13-05).
+
+**Posizione nel form:** sotto il selettore frequenza.
+
+**Toggle:** `"Sincronizza con Google Tasks"` (IT) / `"Sync with Google Tasks"` (EN)
+
+**Condizioni di visibilità — il toggle appare SOLO se:**
+1. L'utente ha un account Google collegato (record `google_oauth_tokens` con status `active`)
+2. L'area ha `tracking_mode = 'binary'`
+
+**Behavior:**
+- Toggle ON → `areas.google_tasks_sync = true`
+- Toggle OFF → `areas.google_tasks_sync = false`
+- In create mode: OFF di default
+- In edit mode: mostra stato corrente
+
+### Acceptance criteria
+
+- [ ] Toggle visibile solo con Google collegato + tracking_mode binary
+- [ ] Nascosto per aree quantity_reduce
+- [ ] Nascosto se Google non collegato
+- [ ] Valore salvato su INSERT/UPDATE
+- [ ] Testi localizzati IT/EN
+
+---
+
+## story-05-08 — Toggle Gym template per aree Health ⏳
+
+Continua Epic 05 di opad.me. Aggiungi il toggle per attivare la scheda palestra nelle aree Health.
+
+**Condizione di visibilità:** solo se tipo selezionato = `"Health"`
+
+**Toggle:** `"Abilita scheda palestra"` (IT) / `"Enable gym plan"` (EN)
+
+**Behavior:**
+- Toggle ON → l'area viene trattata come area gym nell'Area Detail (mostra GymCard)
+- La condizione di attivazione della GymCard non si basa più solo sul nome "gym/palestra" ma anche su questo flag
+- In create mode: OFF di default
+- In edit mode: mostra stato corrente
+
+**Nota:** Questo toggle è una semplificazione rispetto alla detection basata sul nome. In futuro il flag esplicito sostituirà completamente l'euristica name-based.
+
+### Acceptance criteria
+
+- [ ] Toggle visibile solo per aree Health
+- [ ] Nascosto per Study, Reduce, Finance
+- [ ] GymCard appare in Area Detail quando attivo
+- [ ] Testi localizzati IT/EN

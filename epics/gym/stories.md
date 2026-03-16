@@ -16,7 +16,7 @@ story-11-05 → Storico sessioni collassabile
 
 ## story-11-01 — Schema DB e wizard setup scheda
 
-BetonMe è un'app di osservazione del benessere. La sezione Gym Card nell'Area Detail deve ora supportare una **scheda palestra strutturata**. Implementa il nuovo schema DB e il wizard di primo accesso.
+opad.me è un'app di osservazione del benessere. La sezione Gym Card nell'Area Detail deve ora supportare una **scheda palestra strutturata**. Implementa il nuovo schema DB e il wizard di primo accesso.
 
 **Nuovo schema DB** (sostituisce le tabelle `gym_sessions` e `gym_exercises` esistenti):
 
@@ -46,7 +46,7 @@ Tap su CTA → bottom sheet di configurazione:
 
 ## story-11-02 — Gestione scheda: giorni, gruppi muscolari, esercizi
 
-Continua Epic 11 di BetonMe. Implementa la schermata di gestione della scheda palestra.
+Continua Epic 11 di opad.me. Implementa la schermata di gestione della scheda palestra.
 
 **Accesso:** bottone `"Modifica scheda"` (IT) / `"Edit plan"` (EN) in cima alla sezione Gym Card.
 
@@ -89,7 +89,7 @@ Scheda / Plan
 
 ## story-11-03 — Sessione giornaliera: checklist e selezione giorno
 
-Continua Epic 11 di BetonMe. Implementa la visualizzazione della sessione di oggi nella Gym Card.
+Continua Epic 11 di opad.me. Implementa la visualizzazione della sessione di oggi nella Gym Card.
 
 **Selezione automatica del giorno:**
 - Se oggi esiste già una sessione → mostrarla
@@ -121,7 +121,7 @@ Per ogni esercizio:
 
 ## story-11-04 — Azioni esercizio: DONE, EDIT peso, DISATTIVA
 
-Continua Epic 11 di BetonMe. Implementa le azioni rapide sugli esercizi durante la sessione.
+Continua Epic 11 di opad.me. Implementa le azioni rapide sugli esercizi durante la sessione.
 
 **DONE — tap sul checkbox:**
 - Al primo tap: crea (o aggiorna) il record `gym_session_exercises` con `completed = true` e `weight_used = default_weight` dell'esercizio
@@ -145,7 +145,7 @@ Continua Epic 11 di BetonMe. Implementa le azioni rapide sugli esercizi durante 
 
 ## story-11-05 — Storico sessioni collassabile
 
-Continua Epic 11 di BetonMe. Aggiungi la sezione storico sessioni in fondo alla Gym Card.
+Continua Epic 11 di opad.me. Aggiungi la sezione storico sessioni in fondo alla Gym Card.
 
 **Posizione:** sotto la sessione di oggi, separata da un divider.
 

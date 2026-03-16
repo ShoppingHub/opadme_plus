@@ -3,14 +3,16 @@
 ## Sequenza di implementazione
 
 ```
-story-02-01 → Layout Home: header + selettore settimanale + lista attività       ⏳ da fare
-story-02-02 → Stato check-in per ciascuna area (caricamento + ottimistico)        ⏳ da fare
-story-02-03 → Retroattività: marcare e annullare check-in su giorni passati       ⏳ da fare
-story-02-04 → Note per attività: icona, testo libero, salvataggio per area+giorno ⏳ da fare
-story-02-05 → CTA Gym: "Apri scheda" → naviga Area Detail gym                     ⏳ da fare
-story-02-06 → Indicatore gym day nella Home                                        ⏳ da fare
-story-02-07 → Empty state Home (nessuna area → CTA Attività)                      ⏳ da fare
-story-02-08 → QuantityCounter in Home per aree quantity_reduce                    ⏳ da fare
+story-02-01 → Layout Home: header + selettore settimanale + lista attività       ✅ completata
+story-02-02 → Stato check-in per ciascuna area (caricamento + ottimistico)        ✅ completata
+story-02-03 → Retroattività: marcare e annullare check-in su giorni passati       ✅ completata
+story-02-04 → Note per attività: icona, testo libero, salvataggio per area+giorno ✅ completata
+story-02-05 → CTA Gym: "Apri scheda" → naviga Area Detail gym                     ✅ completata
+story-02-06 → Indicatore gym day nella Home                                        ✅ completata
+story-02-07 → Empty state Home (nessuna area → CTA Attività)                      ✅ completata
+story-02-08 → QuantityCounter in Home per aree quantity_reduce                    ✅ completata
+story-02-09 → WeekBanner: dialogo calendario mensile per navigazione rapida       ✅ completata (extra)
+story-02-10 → Google Tasks auto-sync al caricamento Home                          ✅ completata (extra)
 ```
 
 > **Prerequisiti:** Richiede story-09-04 (refactor nav, route `/activities`) e Epic 03 (CheckInButton).
@@ -212,3 +214,37 @@ Continua la Home di opad.me. Integra il `<QuantityCounter>` nella lista attivit�
 - Non mostrare indicatori di tendenza (frecce su/giù, colori di performance)
 - Non aggiungere messaggi di feedback valutativi
 - Non dominare visivamente la Home — la card deve rimanere discreta
+
+---
+
+## story-02-09 — WeekBanner: dialogo calendario mensile ✅
+
+Continua la Home di opad.me. Aggiungi un banner interattivo sopra il WeekSelector che, al tap, apre un dialogo calendario mensile per navigazione rapida tra le settimane.
+
+**Cosa mostra il banner:**
+- Testo che indica l'offset della settimana rispetto a oggi (es. "Questa settimana", "1 settimana fa", "2 settimane fa")
+- Tap → apre un dialogo con calendario mensile
+
+**Dialogo calendario:**
+- Header con mese/anno + frecce prev/next mese
+- Griglia calendario con evidenziazione della settimana selezionata
+- Calcolo settimane ISO
+- CTA "Oggi / Today" → torna alla settimana corrente
+- CTA "Vai / Go" → chiude e naviga alla settimana selezionata
+- Supporto locale IT/EN per nomi mesi e giorni
+
+---
+
+## story-02-10 — Google Tasks auto-sync al caricamento Home ✅
+
+Continua la Home di opad.me. Integra la sincronizzazione automatica con Google Tasks.
+
+> **Riferimento completo:** vedi `epics/google-tasks/epic-13-google-tasks.md` (Story 13-08).
+
+**Al mount della Home:**
+- Se l'utente ha Google collegato → fire-and-forget call a Edge Function `pull-google-tasks`
+- Nessun loading state visibile, nessun errore mostrato
+
+**Al check-in su area con sync attiva:**
+- Fire-and-forget call a Edge Function `sync-google-tasks` con `{ area_id, date, completed }`
+- Nessun impatto sull'UX del check-in locale

@@ -16,10 +16,10 @@ story-09-05 → Optional 5th tab Finance con toggle in Settings                 
 
 ## story-09-01 — Sidebar desktop ✅
 
-BetonMe è un'app di osservazione del benessere. Aggiungi una sidebar di navigazione laterale che appare su viewport ≥ 1024px.
+opad.me è un'app di osservazione del benessere. Aggiungi una sidebar di navigazione laterale che appare su viewport ≥ 1024px.
 
 **Struttura sidebar (dall'alto verso il basso):**
-- Logo / wordmark `"BetonMe"` in cima (padding top 24px)
+- Logo / wordmark `"opad.me"` in cima (padding top 24px)
 - Voci di navigazione fisse: `Home` · `Aree / Areas`
 - Divider orizzontale sottile
 - `Impostazioni / Settings` in fondo
@@ -36,7 +36,7 @@ BetonMe è un'app di osservazione del benessere. Aggiungi una sidebar di navigaz
 
 ## story-09-02 — Layout responsivo mobile/desktop ✅
 
-Continua Epic 09 di BetonMe. Implementa lo switch automatico tra bottom nav (mobile) e sidebar (desktop).
+Continua Epic 09 di opad.me. Implementa lo switch automatico tra bottom nav (mobile) e sidebar (desktop).
 
 **Behavior:**
 - Viewport < 1024px → mostra solo il bottom nav fisso in basso, sidebar nascosta
@@ -54,7 +54,7 @@ Story completata nell'implementazione precedente. Il comportamento viene sostitu
 
 ## story-09-04 — Refactor nav: 4 tab fisse
 
-Continua Epic 09 di BetonMe. Rifai il sistema di navigazione con 4 tab fisse, rimuovendo il meccanismo degli slot custom.
+Continua Epic 09 di opad.me. Rifai il sistema di navigazione con 4 tab fisse, rimuovendo il meccanismo degli slot custom.
 
 **Obiettivo:** la nav è uguale per tutti gli utenti. Nessuno slot configurabile. Nessuna logica condizionale nei componenti nav.
 
@@ -93,7 +93,7 @@ Continua Epic 09 di BetonMe. Rifai il sistema di navigazione con 4 tab fisse, ri
 
 ## story-09-05 — Optional 5th tab Finance
 
-Continua Epic 09 di BetonMe. Implementa il toggle per abilitare il 5° tab Finance dalla schermata Impostazioni.
+Continua Epic 09 di opad.me. Implementa il toggle per abilitare il 5° tab Finance dalla schermata Impostazioni.
 
 **Dipende da:** story-09-04 (hook `useNavConfig` con `finance.visible` già gestito)
 

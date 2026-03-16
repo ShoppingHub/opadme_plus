@@ -23,8 +23,11 @@ La schermata Area Detail è una schermata di configurazione e memoria — non di
 **Rimuovi completamente:**
 - Il bottone check-in (qualsiasi `<CheckInButton>`, `handleCheckIn`, `handleAutoCheckIn`)
 - Il `<CalendarHeatmap>` (migrato in Progress)
-- Il `<GymCard>` in questa schermata (accessibile solo da Home)
 - Il `<TimeRangeSelector>` e qualsiasi grafico
+
+**Mantieni:**
+- Il `<GymCard>` per aree gym/palestra — resta in Area Detail come punto di accesso alla scheda
+- Auto check-in al primo esercizio completato nella sessione gym
 
 **Header da costruire:**
 - `←` back navigation verso `/activities`
