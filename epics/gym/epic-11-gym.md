@@ -1,5 +1,7 @@
 # Epic 11 — Gym Card (Scheda Palestra)
 
+> **Nota architetturale (v2):** Con l'introduzione del sistema Schede (Epic 14), la Gym Card non vive più come sezione interna dell'Area Detail. Ha una **pagina dedicata** a `/cards/gym`, accessibile dagli entry point in Attività e dalla CTA in Home. Tutta la logica e l'interfaccia descritte in questo epic restano invariate — cambia solo il contenitore.
+
 ## Obiettivo
 
 Offrire all'utente uno strumento semplice per gestire la propria **scheda palestra strutturata** e registrare i carichi sessione per sessione — senza trasformare opad.me in una fitness app.
@@ -10,9 +12,9 @@ L'interazione principale è una **checklist rapida**: l'utente apre l'app, vede 
 
 ## Behavior
 
-Quando un utente crea un'area `health` con nome `Gym` o `Palestra` (case insensitive), l'Area Detail mostra una sezione aggiuntiva: la **Gym Card / Scheda Palestra**.
+La Gym Card è un modulo specialistico (**scheda**, Epic 14) collegato a un'area `health` con nome `Gym` o `Palestra` (case insensitive). Vive nella propria **pagina dedicata** a `/cards/gym`.
 
-La Gym Card non sostituisce il check-in binario — quel meccanismo resta invariato per il grafico traiettoria. La Gym Card è una sezione di log strutturato che appare **sotto** il grafico, l'heatmap e il bottone check-in.
+La Gym Card non sostituisce il check-in binario — quel meccanismo resta invariato per il grafico traiettoria. La Gym Card è un modulo di log strutturato che genera segnali nel sistema EWMA comune tramite l'area collegata (auto check-in al primo esercizio DONE).
 
 ---
 
@@ -33,20 +35,21 @@ Gli esercizi contrassegnati come **giornalieri** (`is_daily = true`) appaiono in
 
 ---
 
-## Rilevamento automatico
+## Rilevamento e abilitazione
 
 | Condizione | Comportamento |
 |---|---|
-| `area.type === "health"` AND nome corrisponde a `gym` o `palestra` (case insensitive) | Mostra la sezione Gym Card |
-| Qualsiasi altra area | Sezione non mostrata |
+| Scheda `gym` abilitata in `user_cards` + area collegata presente | Pagina `/cards/gym` mostra l'interfaccia completa |
+| Scheda `gym` abilitata ma nessuna area collegata | Pagina mostra empty state con CTA per creare area |
+| Scheda `gym` non abilitata | Nessun entry point in Attività |
 
-La Gym Card appare automaticamente — l'utente non deve attivarla.
+L'utente abilita la scheda Gym da Settings (sezione Schede) o dal suggerimento post-creazione area (Epic 14). Il rilevamento automatico dell'area collegata usa: `area.type === "health"` AND nome matcha `/gym|palestra/i`.
 
 ---
 
 ## Flusso 1 — Prima apertura (nessuna scheda configurata)
 
-Quando l'utente apre l'area Gym per la prima volta e non esiste ancora una scheda:
+Quando l'utente apre la pagina `/cards/gym` per la prima volta e non esiste ancora una scheda:
 
 1. La sezione Gym Card mostra un **empty state con prompt setup**:
    > `"Configura la tua scheda"` (IT) / `"Set up your workout plan"` (EN)
@@ -296,7 +299,7 @@ gym_session_exercises
 ## Dipendenze
 
 - Epic 03 (Check-in) — il check-in si completa automaticamente al primo esercizio DONE
-- Epic 04 (Area Detail) — la Gym Card è una sezione aggiuntiva nell'Area Detail
+- Epic 14 (Schede) — la Gym Card è una scheda con pagina dedicata a `/cards/gym`
 - Epic 08 (i18n) — tutte le label in IT/EN
 
 ---

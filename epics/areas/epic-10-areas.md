@@ -63,6 +63,23 @@ Le macro-aree sono sempre visibili — anche se vuote — per aiutare l'utente a
 
 ---
 
+## Entry Point Schede (Epic 14)
+
+Ogni macro-sezione può mostrare le **schede abilitate** per quella categoria. Gli entry point appaiono in fondo alla lista delle area card, prima della CTA `"+ Aggiungi"`.
+
+| Proprietà | Valore |
+|---|---|
+| Layout | Riga: icona scheda (20px `#7DA3A0`) + nome + badge stato + chevron |
+| Background | `bg-[#1F4A50]/60 rounded-lg border border-[#7DA3A0]/20 border-dashed` |
+| Altezza | min 48px |
+| Tap | Apre bottom sheet di anteprima (non naviga direttamente) |
+
+Lo stile `border-dashed` distingue visivamente gli entry point schede dalle area card standard.
+
+Vedi Epic 14 (story-14-03) per i dettagli completi su badge, bottom sheet e behavior.
+
+---
+
 ## Specifiche Area Card (nella lista)
 
 | Proprietà | Valore |
@@ -165,6 +182,7 @@ Skeleton animate-pulse per ogni sezione
 - Epic 05 (Add/Edit Area) — per la navigazione al form
 - Epic 04 (Area Detail) — per la navigazione al dettaglio
 - Epic 08 (i18n) — per le label in IT/EN
+- Epic 14 (Schede) — entry point schede nelle macro-sezioni
 
 ---
 
@@ -175,3 +193,4 @@ Skeleton animate-pulse per ogni sezione
 - `story-10-03` — Stati empty, loading e area archiviata — **completata**
 - `story-10-04` — Rename route `/areas` → `/activities`, label "Attività", back nav da Area Detail — **da fare**
 - `story-10-05` — Badge totale giornaliero nelle card Reduce quantitative — **da fare**
+- `story-10-06` — Entry point schede nelle macro-sezioni — **da fare** *(implementata in Epic 14, story-14-03)*

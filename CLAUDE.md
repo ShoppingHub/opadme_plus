@@ -37,7 +37,7 @@ betonme/
 ├── prd.md                           ← mappa prodotto (snello, solo feature map)
 │
 ├── architecture/
-│   ├── navigation-v2.md             ← architettura navigazione v2 (4 tab fisse + 5° opzionale)
+│   ├── navigation-v2.md             ← architettura navigazione v2 (4 tab fisse, no tab opzionali)
 │   └── behavioral-trajectory-model.md ← modello matematico EWMA per la traiettoria comportamentale
 │
 ├── brand-system/
@@ -66,7 +66,7 @@ betonme/
 │   │   ├── epic-05-add-edit-area.md
 │   │   └── stories.md
 │   ├── finance/
-│   │   ├── epic-06-finance.md       ← Finance projection (5° tab opzionale)
+│   │   ├── epic-06-finance.md       ← Finance projection (scheda con pagina dedicata /cards/finance)
 │   │   └── stories.md
 │   ├── settings/
 │   │   ├── epic-07-settings.md
@@ -75,13 +75,16 @@ betonme/
 │   │   ├── epic-08-i18n.md          ← lingua IT/EN
 │   │   └── stories.md
 │   ├── layout/
-│   │   ├── epic-09-layout.md        ← 4 tab fisse + optional 5th tab
+│   │   ├── epic-09-layout.md        ← 4 tab fisse (no tab opzionali)
 │   │   └── stories.md
 │   ├── areas/
 │   │   ├── epic-10-areas.md         ← Attività: 4 macro-categorie (route /activities)
 │   │   └── stories.md
 │   ├── gym/
-│   │   ├── epic-11-gym.md           ← gym card / scheda palestra
+│   │   ├── epic-11-gym.md           ← gym card / scheda palestra (pagina dedicata /cards/gym)
+│   │   └── stories.md
+│   ├── cards/
+│   │   ├── epic-14-cards.md         ← Schede: moduli specialistici con pagine dedicate
 │   │   └── stories.md
 │   ├── progress/
 │   │   ├── epic-12-progress.md      ← Progress: osservazione traiettoria globale

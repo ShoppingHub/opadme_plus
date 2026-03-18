@@ -9,7 +9,7 @@ story-07-03 → Toggle score: aggiornamento settings_score_visible su Supabase  
 story-07-04 → Sezione Menu: voci fisse + max 2 slot custom configurabili      ✅ completata (deprecata)
 story-07-05 → Sign out con redirect                                           ✅ completata
 story-07-06 → Delete account con modale e cascade                             ✅ completata
-story-07-07 → Toggle "Mostra sezione Finanze" + extra_tab_enabled su Supabase ⏳ da fare
+story-07-07 → Sostituita da Epic 14 story-14-06 (sezione Schede generica)   ✅ deprecata
 story-07-08 → Theme system: dark/light/system + 4 color palette              ⏳ da fare
 story-07-09 → Sezione Google Tasks: collega/scollega account Google          ⏳ da fare
 story-07-10 → Profile avatar con iniziali/immagine                           ⏳ da fare
@@ -122,29 +122,9 @@ EN:
 
 ---
 
-## story-07-07 — Toggle "Mostra sezione Finanze"
+## story-07-07 — *(Deprecata)* → Sezione Schede generica
 
-Continua Epic 07 di opad.me. Aggiungi il toggle per abilitare il 5° tab Finance nella navigazione.
-
-**Dipende da:** story-09-04 (hook `useNavConfig` con `extra_tab_enabled` già gestito)
-
-**Cosa aggiungere in Settings — sezione Preferenze**, dopo i toggle esistenti:
-
-- Toggle: `"Mostra sezione Finanze"` (IT) / `"Show Finance tab"` (EN) — default OFF
-- Sottotitolo IT: `"Aggiunge un accesso rapido alla proiezione finanziaria."`
-- Sottotitolo EN: `"Adds quick access to the finance projection."`
-
-**Behavior:**
-- Al cambio del toggle → aggiornamento ottimistico di `extra_tab_enabled` (BOOLEAN) nella tabella `users`
-- Se `true` → il tab "Finanze / Finance" appare immediatamente nella nav (bottom nav su mobile, sidebar su desktop), come 4a voce prima di Impostazioni
-- Se `false` → il tab scompare dalla nav immediatamente
-- Salvataggio silenzioso — nessun toast
-
-**DB:** la colonna `extra_tab_enabled BOOLEAN DEFAULT false` deve esistere nella tabella `users`. Se non esiste, crearla tramite migrazione Supabase.
-
-**Edge case:**
-- Utente riapre l'app con `extra_tab_enabled = true` → il tab Finance è già visibile nella nav al caricamento
-- Errore di salvataggio → toggle torna al valore precedente, nessun messaggio
+> **Questa story è stata sostituita dalla story-14-06 (Epic 14 — Schede).** Il toggle singolo "Mostra sezione Finanze" è stato rimosso e sostituito da una sezione generica "Schede / Cards" in Settings, con un toggle per ogni modulo specialistico disponibile (Gym, Finance Projection, ecc.). Vedi `epics/cards/stories.md` per i dettagli.
 
 ---
 
