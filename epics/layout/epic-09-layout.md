@@ -7,11 +7,11 @@ Adattare la navigazione principale al dispositivo: bottom navigation su mobile, 
 
 ## Behavior
 
-La navigazione è **fissa e uguale per tutti gli utenti**: 4 tab in ordine invariato. Non ci sono slot configurabili.
+La navigazione è **fissa e uguale per tutti gli utenti**: 4 tab in ordine invariato. Non ci sono slot configurabili. Non ci sono tab opzionali.
 
 Su mobile il bottom nav è fisso in basso. Su desktop la navigazione migra sulla colonna sinistra come sidebar fissa. Le voci di navigazione sono identiche su entrambi i layout.
 
-Un **5° tab opzionale** (Finance) può essere abilitato dall'utente tramite Impostazioni. Quando attivo si inserisce come 4a voce, spostando Impostazioni in 5a posizione. Questo è l'unico caso in cui la nav contiene 5 voci.
+> **Nota (v2):** Il 5° tab opzionale (Finance) è stato rimosso. Con l'introduzione del sistema Schede (Epic 14), Finance Projection è diventata una scheda con pagina dedicata (`/cards/finance`), accessibile dalla sezione Attività. La nav resta fissa a 4 tab.
 
 ---
 
@@ -27,11 +27,6 @@ Un **5° tab opzionale** (Finance) può essere abilitato dall'utente tramite Imp
 ├─────────────────────────────┤
 │  Home · Attività · Progress · ⚙  │  ← Bottom nav fissa 56px (4 tab default)
 └─────────────────────────────┘
-```
-
-Con 5° tab abilitato:
-```
-│  Home · Attività · Progress · Finanze · ⚙  │
 ```
 
 ---
@@ -51,16 +46,6 @@ Con 5° tab abilitato:
 │  Impostazioni│                              │
 │              │                              │
 └──────────────┴──────────────────────────────┘
-```
-
-Con 5° tab abilitato:
-```
-│  Home        │
-│  Attività    │
-│  Progress    │
-│  Finanze     │   ← inserito prima del divider
-│  ──────────  │
-│  Impostazioni│
 ```
 
 ### Specifiche sidebar desktop
@@ -87,10 +72,11 @@ Con 5° tab abilitato:
 | 1 | Home | `/` | Fissa |
 | 2 | Attività / Activities | `/activities` | Fissa |
 | 3 | Progress | `/progress` | Fissa |
-| 4 | [Finanze] | `/finance` | Opzionale — visibile solo se `extra_tab_enabled = true` |
 | Ultima | Impostazioni / Settings | `/settings` | Fissa, sempre separata da divider su desktop |
 
-Le 4 tab fisse non sono mai nascoste, mai configurabili.
+Le 4 tab fisse non sono mai nascoste, mai configurabili. Non ci sono tab opzionali.
+
+> Le schede (Gym, Finance Projection) hanno le proprie route dedicate (`/cards/gym`, `/cards/finance`) ma non appaiono nella nav — sono accessibili dalla pagina Attività (Epic 14).
 
 ---
 
@@ -114,9 +100,10 @@ const DEFAULT_NAV: NavItem[] = [
   { id: 'home',       route: '/',           icon: Home,         labelIT: 'Home',          labelEN: 'Home',     visible: true },
   { id: 'activities', route: '/activities', icon: LayoutGrid,   labelIT: 'Attività',      labelEN: 'Activities', visible: true },
   { id: 'progress',   route: '/progress',   icon: TrendingUp,   labelIT: 'Progress',      labelEN: 'Progress', visible: true },
-  { id: 'finance',    route: '/finance',    icon: Wallet,       labelIT: 'Finanze',       labelEN: 'Finance',  visible: false }, // dipende da extra_tab_enabled
   { id: 'settings',   route: '/settings',   icon: Settings,     labelIT: 'Impostazioni',  labelEN: 'Settings', visible: true, isLast: true },
 ]
+// Nota: la voce Finance è stata rimossa dalla nav.
+// Finance Projection è ora una scheda con pagina dedicata /cards/finance (Epic 14).
 ```
 
 Il componente nav esegue solo:
@@ -145,8 +132,6 @@ Nessuna logica condizionale nei componenti nav.
 |---|---|---|
 | Voce attiva | Icona `#7DA3A0`, label sotto | Riga intera highlight, icona + label `#7DA3A0` |
 | Voce inattiva | Icona `#B9C0C1` | Icona + label `#B9C0C1` |
-| 5° tab non abilitato | Non mostrato | Non mostrato |
-| 5° tab abilitato | Appare come 4a voce | Appare prima del divider |
 
 ---
 
@@ -154,8 +139,6 @@ Nessuna logica condizionale nei componenti nav.
 
 - Viewport ridimensionato durante la sessione → layout si adatta senza reload
 - Sidebar desktop non collassabile (MVP)
-- Se `extra_tab_enabled` cambia in Settings → nav si aggiorna immediatamente senza reload
-- Il 5° tab non può mai spostarsi prima delle tab fisse (ordine invariabile)
 
 ---
 
@@ -163,12 +146,12 @@ Nessuna logica condizionale nei componenti nav.
 
 - [x] Su viewport < 1024px: solo bottom nav in basso
 - [x] Su viewport ≥ 1024px: solo sidebar laterale sinistra (240px)
-- [ ] La nav mostra esattamente: Home · Attività · Progress · Impostazioni (4 tab di default)
+- [ ] La nav mostra esattamente: Home · Attività · Progress · Impostazioni (4 tab fisse, nessun tab opzionale)
 - [ ] Impostazioni è sempre separata da divider su desktop
 - [ ] La voce attiva è evidenziata con `#7DA3A0`
 - [ ] Resize aggiorna il layout dinamicamente (no reload)
-- [ ] Se `extra_tab_enabled = true`: appare tab Finance come 4a voce
-- [ ] `useNavConfig` fornisce l'array filtrato; i componenti nav non contengono logica condizionale
+- [ ] `useNavConfig` fornisce l'array fisso; i componenti nav non contengono logica condizionale
+- [ ] Le route `/cards/*` sono registrate nel router ma non nella nav
 
 ---
 
@@ -188,23 +171,22 @@ Nessuna logica condizionale nei componenti nav.
 ## Migration DB
 
 ```sql
--- Aggiungere colonna per 5° tab
-ALTER TABLE users ADD COLUMN extra_tab_enabled BOOLEAN DEFAULT false;
-
--- Migrazione da vecchio sistema (se menu_custom_items conteneva 'finance')
-UPDATE users SET extra_tab_enabled = true
-WHERE menu_custom_items @> ARRAY['finance'];
-
 -- Rimuovere colonna obsoleta
-ALTER TABLE users DROP COLUMN menu_custom_items;
+ALTER TABLE users DROP COLUMN IF EXISTS menu_custom_items;
+
+-- extra_tab_enabled è stata rimossa e sostituita dalla tabella user_cards (Epic 14)
+ALTER TABLE users DROP COLUMN IF EXISTS extra_tab_enabled;
 ```
+
+> La migrazione completa (creazione `user_cards`, trasferimento dati) è definita in Epic 14 (story-14-01).
 
 ---
 
 ## Dependencies
 
-- Epic 07 (Settings) — il toggle `extra_tab_enabled` vive in Impostazioni
+- Epic 07 (Settings) — preferenze utente
 - Epic 08 (i18n) — label IT/EN per tutte le voci nav
+- Epic 14 (Schede) — route dedicate `/cards/*` registrate nel router ma non nella nav
 
 ---
 
@@ -214,4 +196,4 @@ ALTER TABLE users DROP COLUMN menu_custom_items;
 - `story-09-02` — Adattamento responsivo: bottom nav su mobile, sidebar su desktop — **completata**
 - `story-09-03` — Voci custom nella sidebar da configurazione Settings — **completata** *(da refactorare in 09-04)*
 - `story-09-04` — Refactor nav: 4 tab fisse via `useNavConfig`, rimozione `useMenuConfig` — **da fare**
-- `story-09-05` — Optional 5th tab: toggle in Settings + rendering condizionale Finance — **da fare**
+- `story-09-05` — ~~Optional 5th tab~~ → **rimossa** — sostituita dal sistema Schede (Epic 14). Le schede hanno route dedicate `/cards/*` senza tab nella nav.

@@ -21,8 +21,9 @@ La stessa schermata è usata sia per la creazione (Add) che per la modifica (Edi
 3. Compila nome, tipo, frequenza
 4. Tappa "Start observing"
 5. L'area viene creata su Supabase
-6. Redirect alla Dashboard — la nuova card è visibile
-7. Nessuna schermata di celebrazione
+6. **Se l'area corrisponde a una scheda disponibile** (es. nome "Palestra" → scheda Gym) **e la scheda non è già abilitata** → appare un suggerimento non bloccante per configurare la scheda (Epic 14, story-14-07)
+7. Altrimenti → redirect alla Dashboard — la nuova card è visibile
+8. Nessuna schermata di celebrazione
 
 ### Creazione Area di tipo Reduce
 1. L'utente seleziona il tipo "Reduce"
@@ -165,6 +166,12 @@ Solo un tipo selezionabile alla volta.
 
 ---
 
+## Dipendenze
+
+- Epic 14 (Schede) — suggerimento schede nel flusso post-creazione area
+
+---
+
 ## Stories
 
 - `story-05-01` — Layout form con 3 campi e CTA
@@ -173,3 +180,4 @@ Solo un tipo selezionabile alla volta.
 - `story-05-04` — Integrazione Supabase: creazione e modifica area
 - `story-05-05` — Archiviazione area
 - `story-05-06` — Sezione Tracking mode per aree Reduce (Binary / Quantity) + campi quantitativi
+- `story-05-07` — Suggerimento schede post-creazione area — **da fare** *(implementata in Epic 14, story-14-07)*

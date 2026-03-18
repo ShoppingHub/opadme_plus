@@ -111,39 +111,43 @@ Home /
 
 Attività /activities
 ├── Lista aree per macro-categoria (4 sezioni)
-│   ├── Salute / Health
+│   ├── Salute / Health  [+ entry point schede abilitate]
 │   ├── Studio / Study
 │   ├── Riduci / Reduce
-│   └── Finanze / Finance
+│   └── Finanze / Finance  [+ entry point schede abilitate]
 ├── Area Detail /activities/:id
 │   ├── Grafico traiettoria (compatto, 30d default)
 │   ├── TimeRangeSelector
 │   ├── CalendarHeatmap 30 giorni
 │   ├── CheckInButton
-│   ├── [Gym Card — se area gym/palestra]
-│   │   ├── Sessione di oggi (checklist esercizi)
-│   │   ├── Selettore giorno
-│   │   ├── Storico sessioni
-│   │   └── Modifica scheda
 │   └── Link "Modifica area"
 ├── Aggiungi Area /activities/new
 └── Modifica Area /activities/:id/edit
+
+Schede /cards/* (pagine dedicate — Epic 14)
+├── Scheda Palestra /cards/gym
+│   ├── Sessione di oggi (checklist esercizi)
+│   ├── Selettore giorno
+│   ├── Storico sessioni
+│   ├── Modifica scheda
+│   └── Wizard setup (primo accesso)
+└── Proiezione Finanze /cards/finance
+    ├── Grafico storico Finance
+    └── Proiezione 30 giorni
 
 Progress /progress
 ├── Grafico aggregato (tutte le aree)
 ├── TimeRangeSelector (30d / 90d / 365d)
 └── MacroAreaSelector (Tutto · Salute · Studio · Riduci · Finanze)
 
-[Finance /finance]  ← Solo se 5th tab abilitato
-├── Grafico storico Finance
-└── Proiezione 30 giorni
-
 Impostazioni /settings
 ├── Preferenze
 │   ├── Lingua (IT/EN)
 │   ├── Mostra punteggio traiettoria (toggle)
-│   ├── Notifiche (toggle)
-│   └── [Mostra tab aggiuntiva (toggle)] ← abilita 5th tab Finance
+│   └── Notifiche (toggle)
+├── Schede
+│   ├── Scheda Palestra (toggle)
+│   └── Proiezione Finanze (toggle)
 └── Account
     ├── Email (read-only)
     ├── Sign out
@@ -221,66 +225,55 @@ Impostazioni /settings
 
 ---
 
-## 5. Optional 5th Tab Strategy
+## 5. Schede — Moduli con Pagine Dedicate (Epic 14)
 
-### Quando appare
-Solo quando l'utente attiva il toggle "Mostra tab aggiuntiva / Show extra tab" in Impostazioni.
+> Il concetto di 5° tab opzionale è stato **rimosso** e sostituito dal sistema Schede.
 
-### Target
-Per l'MVP: Finance projection (`/finance`). La voce appare come "Finanze" con icona `Wallet`.
+### Cosa sono le Schede
 
-### Posizione nella nav
-Quando attivata, si inserisce come 4a voce. Impostazioni diventa la 5a.
+Le Schede sono moduli specialistici separati dalle attività ma collegati alle macro-sezioni. Ogni scheda ha una pagina dedicata con la propria route (`/cards/*`) e non appare nella navigazione principale.
 
-Mobile:
+### Schede disponibili (MVP)
+
+| ID | Nome IT | Route | Sezione |
+|---|---|---|---|
+| `gym` | Scheda Palestra | `/cards/gym` | Salute |
+| `finance_projection` | Proiezione Finanze | `/cards/finance` | Finanze |
+
+### Come si accede alle Schede
+
+1. **Da Attività:** entry point nella macro-sezione corrispondente (card con border-dashed) → bottom sheet anteprima → CTA "Apri" → pagina dedicata
+2. **Da Home:** CTA "Apri scheda" per area Gym → `/cards/gym`
+3. **Da Settings:** sezione "Schede" con toggle per abilitare/disabilitare
+
+### Schema DB
+
+```sql
+-- Sostituisce extra_tab_enabled e menu_custom_items
+CREATE TABLE user_cards (
+  id UUID PRIMARY KEY,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  card_type TEXT NOT NULL CHECK (card_type IN ('gym', 'finance_projection')),
+  area_id UUID REFERENCES areas(id) ON DELETE SET NULL,
+  enabled BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(user_id, card_type)
+);
 ```
-Home · Attività · Progress · Finanze · ⚙
-```
-Desktop (sidebar):
-```
-Home
-Attività
-Progress
-Finanze        ← opzionale, appare solo se abilitata
-──────
-Impostazioni
-```
 
-### Come non rompere la 4-tab default
+### Navigazione invariata
 
-**Regola:** la nav non contiene mai logica condizionale interna. Il nav component riceve solo un array di tab visibili. Tutta la logica di filtro e composizione vive nel hook.
+La nav resta fissa a 4 tab. Le schede non aggiungono voci alla nav — vivono come pagine dedicate accessibili dall'ecosistema Attività.
 
-**Hook `useNavConfig`:**
 ```
 navItems: NavItem[] = [
   { id: 'home',       route: '/',           visible: true,  fixed: true },
   { id: 'activities', route: '/activities', visible: true,  fixed: true },
   { id: 'progress',   route: '/progress',   visible: true,  fixed: true },
-  { id: 'finance',    route: '/finance',    visible: false, fixed: false }, // 5th tab opzionale
   { id: 'settings',   route: '/settings',   visible: true,  fixed: true, isLast: true },
 ]
+// Nessun tab opzionale. Le route /cards/* sono registrate nel router ma non nella nav.
 ```
-
-Il nav component fa solo:
-```
-navItems.filter(item => item.visible).map(item => <NavItem ... />)
-```
-
-### Schema DB
-
-Sostituire `menu_custom_items TEXT[]` con:
-```sql
-extra_tab_enabled BOOLEAN DEFAULT false
-```
-
-Migrazione: leggere `menu_custom_items` → se contiene `'finance'`, impostare `extra_tab_enabled = true`.
-
-### Architettura-ready ma non forzata
-
-Il sistema supporta ora qualsiasi contenuto nel 5th tab. In futuro si può aggiungere:
-- `extra_tab_target TEXT` (es. `'finance'`, `'coach'`, `'insights'`)
-- Senza toccare il nav component
-- Senza rompere la nav a 4 tab di default
 
 ---
 
@@ -307,11 +300,10 @@ Il sistema supporta ora qualsiasi contenuto nel 5th tab. In futuro si può aggiu
 ```
 1. Attività → Salute → "+ Aggiungi"
 2. Nome: "Palestra", tipo: health
-3. Salva → naviga ad Area Detail
-4. Gym Card appare in basso
-5. Tap "Inizia / Get started"
-6. Wizard: quanti giorni? → nomi giorni → Crea scheda
-7. Aggiungi gruppi muscolari ed esercizi per ogni giorno
+3. Salva → suggerimento: "Vuoi configurare anche la Scheda Palestra?"
+4. Tap "Configura" → naviga a /cards/gym
+5. Wizard: quanti giorni? → nomi giorni → Crea scheda
+6. Aggiungi gruppi muscolari ed esercizi per ogni giorno
 ```
 
 ### Flow 4 — Osserva traiettoria
@@ -323,12 +315,12 @@ Il sistema supporta ora qualsiasi contenuto nel 5th tab. In futuro si può aggiu
 5. Cambia time range a 90d
 ```
 
-### Flow 5 — Attiva 5th tab Finance
+### Flow 5 — Abilita scheda Finance
 ```
 1. Tap tab Impostazioni
-2. Attiva toggle "Mostra tab aggiuntiva"
-3. Il tab "Finanze" appare nella nav
-4. Tap Finanze → vedi grafico proiezione Finance
+2. Nella sezione "Schede", attiva toggle "Proiezione Finanze"
+3. L'entry point appare nella sezione Finanze di Attività
+4. Attività → Finanze → tap entry point → bottom sheet → "Apri" → /cards/finance
 ```
 
 ---
@@ -340,8 +332,8 @@ Il sistema supporta ora qualsiasi contenuto nel 5th tab. In futuro si può aggiu
 | Epic | Modifica principale |
 |---|---|
 | **Epic 02** (Dashboard → Home) | Rewrite completo: hub giornaliero con lista attività di oggi e check-in diretto |
-| **Epic 07** (Settings) | Rimuovi sezione Menu custom; aggiungi toggle 5th tab |
-| **Epic 09** (Layout) | Da 3-fisse + 2-custom → 4-fisse + optional 5th via hook |
+| **Epic 07** (Settings) | Rimuovi sezione Menu custom; aggiungi sezione Schede generica (Epic 14) |
+| **Epic 09** (Layout) | Da 3-fisse + 2-custom → 4-fisse senza tab opzionali |
 | **Epic 10** (Aree → Attività) | Rename tab/route; aggiorna ruolo e back navigation |
 
 ### Nuovi epics
@@ -349,6 +341,7 @@ Il sistema supporta ora qualsiasi contenuto nel 5th tab. In futuro si può aggiu
 | Epic | Contenuto |
 |---|---|
 | **Epic 12** (Progress) | Sezione Progress dedicata: grafico aggregato estratto da Home + filtri |
+| **Epic 14** (Schede) | Moduli specialistici con pagine dedicate — Gym Card e Finance Projection |
 
 ### Stories da modificare
 
@@ -371,7 +364,7 @@ Il sistema supporta ora qualsiasi contenuto nel 5th tab. In futuro si può aggiu
 | 12-02 | MacroAreaSelector in Progress: filtro per macro-area |
 | 12-03 | Empty state e loading state Progress |
 | 09-04 (nuovo) | Refactor nav: 4 tab fisse via useNavConfig, rimozione useMenuConfig |
-| 09-05 (nuovo) | Optional 5th tab: toggle in Settings + rendering condizionale nella nav |
+| 14-01..14-08 (nuove) | Sistema Schede: DB, registro, entry point, pagine dedicate, Settings, suggerimento post-creazione |
 
 ---
 
@@ -430,19 +423,18 @@ Il sistema supporta ora qualsiasi contenuto nel 5th tab. In futuro si può aggiu
 | `/areas/:id/edit` | `/activities/:id/edit` |
 | `/` | `/` (invariato, ma comportamento completamente diverso) |
 | (non esiste) | `/progress` (nuovo) |
+| `/finance` (5th tab) | `/cards/finance` (pagina dedicata scheda) |
+| (non esiste) | `/cards/gym` (pagina dedicata scheda) |
 
 ### Migration DB
 
 ```sql
--- Aggiungi colonna 5th tab
-ALTER TABLE users ADD COLUMN extra_tab_enabled BOOLEAN DEFAULT false;
+-- Rimuovere colonne obsolete
+ALTER TABLE users DROP COLUMN IF EXISTS menu_custom_items;
+ALTER TABLE users DROP COLUMN IF EXISTS extra_tab_enabled;
 
--- Migrazione dati: se l'utente aveva 'finance' nei menu_custom_items, abilita extra tab
-UPDATE users SET extra_tab_enabled = true
-WHERE menu_custom_items @> ARRAY['finance'];
-
--- Drop vecchia colonna (dopo migrazione)
-ALTER TABLE users DROP COLUMN menu_custom_items;
+-- Nuova tabella per il sistema Schede (Epic 14)
+-- Vedi epic-14-cards.md per lo schema completo di user_cards
 ```
 
 ### Ordine di implementazione raccomandato
@@ -450,9 +442,9 @@ ALTER TABLE users DROP COLUMN menu_custom_items;
 1. Refactor nav (Epic 09 aggiornato) — `useNavConfig` + 4 tab fisse — prerequisito per tutto
 2. Progress section (Epic 12) — riusa quasi tutto il codice del Dashboard attuale
 3. Home rewrite (Epic 02 nuovo) — lista attività + check-in
-4. Settings update (Epic 07) — rimuovi menu sezione, aggiungi toggle 5th tab
+4. Settings update (Epic 07) — rimuovi menu sezione, aggiungi sezione Schede
 5. Rename Attività (Epic 10) — rename route, invariato per il resto
-6. 5th tab optional (Epic 09 story 09-05) — ultimo, perché dipende da tutto
+6. Sistema Schede (Epic 14) — DB, registro, entry point, pagine dedicate
 
 ---
 

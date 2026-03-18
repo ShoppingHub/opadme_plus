@@ -51,10 +51,10 @@ Per ogni attività, un'icona note permette di aggiungere un appunto libero legat
 - CTA: `"Fatto"` (IT) / `"Done"` (EN)
 - Tap → registra il check-in direttamente
 
-**Area Gym (type health con scheda configurata):**
+**Area Gym (type health con scheda configurata, Epic 14):**
 - CTA: `"Apri scheda"` (IT) / `"Open session"` (EN)
-- Tap → naviga alla scheda del giorno di riferimento (Area Detail gym, Epic 11)
-- Il check-in viene registrato automaticamente all'apertura della scheda gym
+- Tap → naviga alla pagina dedicata della scheda (`/cards/gym`, Epic 14)
+- Il check-in viene registrato automaticamente al primo esercizio DONE
 
 **Area Reduce quantitativa (tracking_mode = quantity_reduce, show_quick_add_home = true):**
 - Nessuna CTA binaria
@@ -208,7 +208,7 @@ Stile: testo piccolo centrato, text-[#B9C0C1]
 - [ ] L'utente può marcare "Fatto" su giorni passati
 - [ ] L'utente può annullare un check-in su giorni passati
 - [ ] La CTA delle aree standard è `"Fatto"` / `"Done"` (non "Log today")
-- [ ] La CTA dell'area Gym è `"Apri scheda"` / `"Open session"` → naviga Area Detail gym
+- [ ] La CTA dell'area Gym è `"Apri scheda"` / `"Open session"` → naviga a `/cards/gym` (pagina dedicata scheda, Epic 14)
 - [ ] Ogni card binary ha un'icona note che apre un campo testo per quella occorrenza (area + giorno)
 - [ ] La nota è salvata con `area_id + date`, max 1500 caratteri
 - [ ] L'icona note è visivamente distinta quando una nota è già presente
@@ -237,6 +237,7 @@ Stile: testo piccolo centrato, text-[#B9C0C1]
 - Epic 03 (Check-in) — logica check-in e stati bottone
 - Epic 08 (i18n) — label IT/EN
 - Epic 11 (Gym) — CTA "Apri scheda" e indicatore gym day
+- Epic 14 (Schede) — CTA Gym naviga a `/cards/gym` (pagina dedicata scheda)
 - Epic 12 (Progress) — la visualizzazione dei trend è stata spostata lì
 
 ---

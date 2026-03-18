@@ -1,5 +1,7 @@
 # Epic 06 — Finance Projection
 
+> **Nota architetturale (v2):** Con l'introduzione del sistema Schede (Epic 14), la Finance Projection non è più un 5° tab opzionale nella navigazione. È una **scheda** con pagina dedicata a `/cards/finance`, accessibile dagli entry point in Attività (sezione Finanze) e abilitabile da Settings (sezione Schede). La logica e l'interfaccia restano invariate.
+
 ## Obiettivo
 Mostrare all'utente la traiettoria dell'area Finance con una proiezione lineare a 30 giorni, senza target, obiettivi o valutazioni — solo la direzione attuale.
 
@@ -7,16 +9,18 @@ Mostrare all'utente la traiettoria dell'area Finance con una proiezione lineare 
 
 ## Behavior
 
-La schermata Finance è una variante dell'Area Detail dedicata esclusivamente all'area di tipo `finance`. La differenza principale è la presenza di una **linea di proiezione tratteggiata** che prolunga la traiettoria storica verso i prossimi 30 giorni.
+La pagina Finance Projection (`/cards/finance`) è una scheda dedicata (Epic 14) che mostra la traiettoria dell'area `finance` con una **linea di proiezione tratteggiata** che prolunga la traiettoria storica verso i prossimi 30 giorni.
 
 Non ci sono campi per inserire obiettivi di risparmio. Non ci sono messaggi del tipo "devi risparmiare X". È pura proiezione di traiettoria.
+
+La Finance Projection usa i dati `score_daily` dell'area finance collegata — nessun sistema di trend parallelo.
 
 ---
 
 ## Flussi
 
 ### Visualizzazione Finance
-1. L'utente tappa il tab "Finance" nel bottom nav
+1. L'utente naviga a `/cards/finance` (da entry point in Attività o da Settings)
 2. Vede la schermata con il grafico storico (linea continua) + proiezione (linea tratteggiata)
 3. Sotto il grafico: label `"30-day estimate based on your current trend."`
 
@@ -30,7 +34,7 @@ Non ci sono campi per inserire obiettivi di risparmio. Non ci sono messaggi del 
 
 ```
 ┌─────────────────────────────┐
-│ ← Finance                   │  ← Header
+│ ← Proiezione Finanze         │  ← Header + back button
 ├─────────────────────────────┤
 │  30d  │  90d  │  365d       │  ← TimeRangeSelector
 ├─────────────────────────────┤
@@ -42,7 +46,7 @@ Non ci sono campi per inserire obiettivi di risparmio. Non ci sono messaggi del 
 │  "30-day estimate based on  │
 │   your current trend."      │  ← Label proiezione
 ├─────────────────────────────┤
-│  Home · Areas · Finance · ⚙ │
+│  ← Proiezione Finanze       │  ← Back → /activities
 └─────────────────────────────┘
 ```
 
@@ -101,7 +105,7 @@ Nessuna CTA
 
 ## Edge Case
 
-- Area Finance non creata → empty state con CTA per creare area con tipo Finance pre-selezionato
+- Area Finance non creata (o `area_id` NULL in `user_cards`) → empty state con CTA per creare area con tipo Finance pre-selezionato
 - Dati insufficienti per proiezione (< 3 check-in) → solo grafico storico senza linea tratteggiata
 - Traiettoria piatta (slope ≈ 0) → proiezione orizzontale, colore neutro `#8C9496`
 - Time range 365d con pochi dati → mostra i dati disponibili + proiezione se ≥ 3 punti
@@ -140,8 +144,17 @@ Nessuna CTA
 
 ---
 
+## Dipendenze
+
+- Epic 14 (Schede) — Finance Projection è una scheda con pagina dedicata a `/cards/finance`
+- Epic 08 (i18n) — label IT/EN
+
+---
+
 ## Stories
 
 - `story-06-01` — Layout Finance con grafico storico
 - `story-06-02` — Calcolo e rendering linea di proiezione tratteggiata
 - `story-06-03` — Empty state Finance con CTA
+
+> **Nota:** L'implementazione delle stories avviene nella pagina `/cards/finance` (non più `/finance`). La story-14-05 (Epic 14) definisce il contenitore pagina dedicata. Le stories qui definiscono il contenuto interno.

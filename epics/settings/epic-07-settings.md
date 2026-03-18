@@ -20,7 +20,7 @@ I salvataggi sono silenziosi — nessun toast, nessun messaggio di conferma per 
 | Lingua / Language | Segmented control IT/EN | Rilevata da browser | Epic 08 |
 | Show trajectory score | Toggle | OFF | Mostra il punteggio numerico nell'Area Detail |
 | Notifications | Toggle | ON | Logica push rinviata al post-MVP |
-| Mostra tab Finance | Toggle | OFF | Abilita il 5° tab Finance nella nav — Epic 09 |
+| Schede / Cards | Sezione con toggle | — | Abilita/disabilita moduli specialistici — Epic 14 |
 | Account email | Testo (read-only) | — | Non modificabile |
 | Sign out | Bottone | — | |
 | Delete account | Bottone distruttivo | — | Richiede conferma |
@@ -35,11 +35,12 @@ I salvataggi sono silenziosi — nessun toast, nessun messaggio di conferma per 
 3. La preferenza `language` viene salvata su Supabase (silenzioso)
 4. Vedi Epic 08 per il comportamento completo
 
-### Toggle "Mostra tab Finance"
-1. L'utente attiva il toggle "Mostra sezione Finanze / Show Finance tab"
-2. La preferenza `extra_tab_enabled` viene aggiornata su Supabase
-3. Salvataggio silenzioso — il 5° tab Finance appare immediatamente nella nav
-4. Disattivando il toggle, il tab Finance scompare dalla nav
+### Sezione Schede
+1. L'utente vede la lista delle schede disponibili con un toggle per ciascuna
+2. Attivando un toggle → la scheda viene abilitata in `user_cards` (INSERT/UPDATE)
+3. L'entry point della scheda appare immediatamente nella pagina Attività
+4. Disattivando → la scheda viene disabilitata, l'entry point scompare
+5. Salvataggio silenzioso — vedi Epic 14 per i dettagli
 
 ### Toggle "Show trajectory score"
 1. L'utente attiva il toggle
@@ -79,7 +80,10 @@ I salvataggi sono silenziosi — nessun toast, nessun messaggio di conferma per 
 │  Lingua  [Italiano│English] │  ← Segmented control
 │  Punteggio traiettoria  [○] │  ← Toggle (default OFF)
 │  Notifiche              [●] │  ← Toggle (default ON)
-│  Mostra sezione Finanze [○] │  ← Toggle 5° tab (default OFF)
+│                             │
+│  Schede / Cards             │  ← Label sezione
+│  🏋️ Scheda Palestra    [○]  │  ← Toggle per scheda (Epic 14)
+│  📈 Proiezione Finanze [○]  │
 │                             │
 │  Account                    │  ← Label sezione
 │  user@email.com             │  ← Email read-only, text-[#B9C0C1]
@@ -136,10 +140,15 @@ Cancel:  "Cancel"              ← testo neutro, chiude il modale
 Colonne richieste nella tabella `users`:
 ```
 language           TEXT     DEFAULT 'en'   CHECK (language IN ('it', 'en'))
-extra_tab_enabled  BOOLEAN  DEFAULT false  -- abilita 5° tab Finance nella nav
 ```
 
+> `extra_tab_enabled` è stata rimossa — sostituita dalla tabella `user_cards` (vedi Epic 14).
 > `menu_custom_items` (TEXT[]) è deprecata — da rimuovere in migrazione (vedi Epic 09, story-09-04).
+
+Tabella aggiuntiva (vedi Epic 14):
+```
+user_cards → id, user_id, card_type, area_id (nullable), enabled, created_at
+```
 
 ---
 
@@ -149,8 +158,9 @@ extra_tab_enabled  BOOLEAN  DEFAULT false  -- abilita 5° tab Finance nella nav
 - [x] Il cambio lingua aggiorna la UI immediatamente e salva `language` su Supabase
 - [x] Il toggle "Show trajectory score" aggiorna `settings_score_visible` su Supabase
 - [x] Il salvataggio dei toggle è silenzioso (nessun toast)
-- [ ] Il toggle "Mostra sezione Finanze / Show Finance tab" aggiorna `extra_tab_enabled` su Supabase
-- [ ] All'attivazione del toggle Finance, il tab appare nella nav immediatamente
+- [ ] La sezione Schede mostra un toggle per ogni scheda disponibile (Epic 14)
+- [ ] L'attivazione di un toggle scheda inserisce/aggiorna un record in `user_cards`
+- [ ] L'entry point della scheda appare/scompare immediatamente nella pagina Attività
 - [x] "Esci / Sign out" termina la sessione e redirige al login
 - [x] "Elimina account / Delete account" apre il modale con il copy esatto specificato
 - [x] "Delete permanently" elimina account e dati con cascade
@@ -187,8 +197,8 @@ extra_tab_enabled  BOOLEAN  DEFAULT false  -- abilita 5° tab Finance nella nav
 | Label lingua | `"Lingua"` | `"Language"` |
 | Label toggle score | `"Mostra punteggio"` | `"Show trajectory score"` |
 | Label toggle notifiche | `"Notifiche"` | `"Notifications"` |
-| Label toggle Finance tab | `"Mostra sezione Finanze"` | `"Show Finance tab"` |
-| Sub toggle Finance tab | `"Aggiunge un accesso rapido alla proiezione finanziaria."` | `"Adds quick access to the finance projection."` |
+| Label sezione schede | `"Schede"` | `"Cards"` |
+| Sub sezione schede | `"Moduli specialistici per le tue aree."` | `"Specialized modules for your areas."` |
 | Label sezione account | `"Account"` | `"Account"` |
 | Bottone sign out | `"Esci"` | `"Sign out"` |
 | Bottone delete | `"Elimina account"` | `"Delete account"` |
@@ -210,7 +220,7 @@ extra_tab_enabled  BOOLEAN  DEFAULT false  -- abilita 5° tab Finance nella nav
 ## Dipendenze
 
 - Epic 08 (i18n) — per la logica lingua e i label IT/EN
-- Epic 09 (Layout) — il toggle `extra_tab_enabled` qui attiva il 5° tab nella nav
+- Epic 14 (Schede) — la sezione Schede in Settings gestisce l'abilitazione dei moduli specialistici
 
 ---
 
@@ -222,4 +232,4 @@ extra_tab_enabled  BOOLEAN  DEFAULT false  -- abilita 5° tab Finance nella nav
 - `story-07-04` — Sezione Menu custom — **deprecata** *(rimossa con refactor nav)*
 - `story-07-05` — Sign out con redirect — **completata**
 - `story-07-06` — Delete account con modale di conferma e cascade — **completata**
-- `story-07-07` — Toggle "Mostra sezione Finanze" con aggiornamento nav immediato — **da fare**
+- `story-07-07` — ~~Toggle "Mostra sezione Finanze"~~ → **sostituita** dalla sezione Schede generica (vedi Epic 14, story-14-06)

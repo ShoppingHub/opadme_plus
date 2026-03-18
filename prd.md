@@ -59,7 +59,9 @@ App
     ├── [Tab 1] Home (hub giornaliero)     → epic-02-dashboard.md
     ├── [Tab 2] Attività                   → epic-10-areas.md / epic-04-area-detail.md / epic-05-add-edit-area.md
     ├── [Tab 3] Progress                   → epic-12-progress.md
-    ├── [Tab 5°] Finance (opzionale)       → epic-06-finance.md · abilitabile da Impostazioni
+    ├── Schede (pagine dedicate)            → epic-14-cards.md · abilitabili da Impostazioni
+    │   ├── /cards/gym                     → Scheda Palestra (epic-11-gym.md)
+    │   └── /cards/finance                 → Proiezione Finanze (epic-06-finance.md)
     └── [Ultima] Impostazioni              → epic-07-settings.md
 ```
 
@@ -67,7 +69,7 @@ App
 - **Mobile (< 1024px):** Bottom nav fissa, 56px, background `#0F2F33` — solo icone
 - **Desktop (≥ 1024px):** Sidebar laterale sinistra, 240px — icone + label
 - **4 tab fisse:** Home · Attività · Progress · Impostazioni — uguali per tutti, non configurabili
-- **5° tab opzionale:** Finance — attivabile da Impostazioni (toggle), non visibile di default
+- **Schede:** moduli specialistici con pagine dedicate (`/cards/*`) — abilitabili da Impostazioni, accessibili da Attività
 - Icone Lucide outline 24px — active `#7DA3A0`, inactive `#B9C0C1`
 - Vedi `epic-09-layout.md` per il comportamento responsivo completo
 - Vedi `architecture/navigation-v2.md` per la razionale architetturale completa
@@ -83,7 +85,7 @@ App
 | 03 | Check-in giornaliero | `epic-03-checkin.md` | P0 |
 | 04 | Area Detail — analisi traiettoria | `epic-04-area-detail.md` | P1 |
 | 05 | Add / Edit Area | `epic-05-add-edit-area.md` | P0 |
-| 06 | Finance Projection (5° tab opzionale) | `epic-06-finance.md` | P2 |
+| 06 | Finance Projection (scheda con pagina dedicata) | `epic-06-finance.md` | P2 |
 | 07 | Settings (lingua, score, notifiche, account) | `epic-07-settings.md` | P1 |
 | 08 | Lingua IT / EN | `epic-08-i18n.md` | P1 |
 | 09 | Layout responsivo — 4 tab fisse + optional 5th | `epic-09-layout.md` | P1 |
@@ -94,6 +96,7 @@ App
 | 14 | Google Tasks — sync bidirezionale con Google | `epics/google-tasks/epic-13-google-tasks.md` | P2 |
 | 15 | Theme system — dark/light/system + 4 palette colori | `epics/settings/stories.md` (story-07-08) | P2 |
 | 16 | Demo mode — accesso senza autenticazione | `epics/auth/stories.md` (story-00-08) | P2 |
+| 17 | Schede — moduli specialistici (Gym, Finance) | `epics/cards/epic-14-cards.md` | P1 |
 
 ---
 
@@ -102,7 +105,7 @@ App
 RLS abilitato su tutte le tabelle.
 
 ```
-users        → id, settings_score_visible (default false), settings_notifications, extra_tab_enabled (default false)
+users        → id, settings_score_visible (default false), settings_notifications
 areas        → id, user_id, name, type, frequency_per_week, archived_at,
                tracking_mode (binary | quantity_reduce), unit_label, baseline_initial, show_quick_add_home
 checkins     → id, area_id, user_id, date, completed — UNIQUE(area_id, date)
@@ -152,15 +155,20 @@ delta = qty_today - reference_qty
 Colonne aggiunte alla tabella `users`:
 ```
 language           TEXT     DEFAULT 'en'   CHECK (language IN ('it', 'en'))
-extra_tab_enabled  BOOLEAN  DEFAULT false  -- abilita il 5° tab Finance nella nav
 ```
 
-> `menu_custom_items` è deprecata. Sarà sostituita da `extra_tab_enabled` in migrazione.
+> `menu_custom_items` e `extra_tab_enabled` sono deprecate — sostituite dalla tabella `user_cards`.
 
-Nuove tabelle per Gym Card:
+Tabella Schede:
 ```
-gym_sessions   → id, area_id, user_id, date
-gym_exercises  → id, session_id, name, sets, reps, weight_kg (nullable), notes (nullable), order
+user_cards     → id, user_id, card_type, area_id (nullable), enabled, created_at
+               UNIQUE(user_id, card_type) — gestisce l'abilitazione dei moduli specialistici
+```
+
+Tabelle Gym Card (schema v2, vedi Epic 11):
+```
+gym_programs, gym_program_days, gym_muscle_groups, gym_program_exercises
+gym_sessions, gym_session_exercises
 ```
 
 ---
@@ -182,8 +190,8 @@ gym_exercises  → id, session_id, name, sets, reps, weight_kg (nullable), notes
 - Toggle visibilità score (default off)
 - Toggle notifiche
 - Layout responsivo: bottom nav mobile · sidebar desktop
-- Menu configurabile: 3 voci fisse + max 2 slot custom
-- Gym Card per area Gym/Palestra
+- Schede: moduli specialistici con pagine dedicate (Gym Card, Finance Projection)
+- Gym Card per area Gym/Palestra (scheda con pagina dedicata)
 
 ### ❌ Escluso
 - Feature social o condivisione
