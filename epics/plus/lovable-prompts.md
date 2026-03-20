@@ -53,6 +53,28 @@ Aggiungi le chiavi di traduzione necessarie a `translations.ts`.
 
 ---
 
+## Prompt 2b — Banner Plus fisso (variante esame)
+
+> **Variante alternativa del Prompt 2.** Banner non dismissable — usare al posto del Prompt 2 se si vuole il banner sempre visibile.
+
+Continua opad.me. Aggiungi un **banner promozionale Plus** fisso nella Home per utenti che non hanno Plus attivo.
+
+**Dove appare:** nella pagina Home (`Index.tsx`), in fondo alla lista delle attività, sopra la bottom nav. Visibile **sempre** se `isPlusActive === false`. Non è possibile chiuderlo — scompare solo quando l'utente attiva Plus.
+
+**Contenuto del banner:**
+- Icona: `Sparkles` (Lucide)
+- Titolo IT: `"Osserva di più con Plus"` — EN: `"Observe more with Plus"`
+- Sottotitolo IT: `"Sblocca schede, temi e riduzione abitudini"` — EN: `"Unlock cards, themes and habit reduction"`
+- CTA IT: `"Scopri Plus"` — EN: `"Discover Plus"` → naviga a `/plus`
+
+Nessun bottone X, nessuna logica di dismiss, nessun localStorage.
+
+**Stile:** card con background card surface, bordo sottile accent tenue, rounded-xl. Tono neutro, coerente col brand.
+
+Aggiungi le chiavi di traduzione necessarie a `translations.ts`.
+
+---
+
 ## Prompt 3 — Pagina /plus
 
 Continua opad.me. Crea una **pagina dedicata** per presentare l'abbonamento Plus.
