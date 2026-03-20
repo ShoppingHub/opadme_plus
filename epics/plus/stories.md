@@ -14,6 +14,8 @@ story-15-07 → Voce "Plus" nella sezione Account di Settings                   
 
 > **Dipendenze:** story-15-01 è prerequisito per tutte le altre. story-15-04 richiede Epic 14 (Schede). story-15-05 richiede Epic 03/05 (Check-in / Add-Edit Area). story-15-06 richiede story-07-08 (Theme system). story-15-07 richiede story-15-03.
 
+> **Nota implementativa:** Il repository `ShoppingHub/joyous-beginning` contiene l'implementazione Lovable attiva. Le schede (Epic 14), il `QuantityCounter`, e il theme system sono già implementati. Le stories di gating (15-04, 15-05, 15-06) modificano componenti esistenti — non creano da zero. Vedi la sezione "Stato implementazione attuale" dell'epic per i file specifici da modificare.
+
 ---
 
 ## story-15-01 — Schema DB: colonne Plus nella tabella users
@@ -149,11 +151,17 @@ Continua Epic 15 di opad.me. Aggiungi il gating Plus alle schede (Epic 14) — s
 
 **Dipende da:** story-15-01 (hook `usePlusStatus`) + Epic 14 (Schede)
 
-**In Attività (entry point schede):**
+**File da modificare:**
+- `src/components/CardEntryPoints.tsx` — aggiungere badge Plus e modificare bottom sheet
+- `src/pages/SettingsPage.tsx` — disabilitare toggle schede se `!isPlusActive`
+- `src/hooks/useNavConfig.tsx` — nascondere tab Cards se `!isPlusActive`
+- `src/pages/Activities.tsx` — badge Plus sulla riga entry point
+
+**In Attività (entry point schede) — modifica `CardEntryPoints.tsx`:**
 
 - Se `isPlusActive === false`:
   - La card scheda mostra un badge `"Plus"` accanto al nome — `text-[#7DA3A0] text-xs`
-  - Tap sulla card → bottom sheet modificato:
+  - Tap sulla card → bottom sheet modificato (il componente usa già un `Drawer` di shadcn/ui):
     - Stessa anteprima (icona, nome, descrizione)
     - Testo aggiuntivo: `"Questa scheda è disponibile con Plus."` (IT) / `"This card is available with Plus."` (EN) — `text-[#B9C0C1] text-sm`
     - CTA cambia da `"Apri"` a `"Scopri Plus"` (IT) / `"Discover Plus"` (EN) → naviga a `/plus`
@@ -162,15 +170,20 @@ Continua Epic 15 di opad.me. Aggiungi il gating Plus alle schede (Epic 14) — s
 - Se `isPlusActive === true`:
   - Comportamento identico a Epic 14 (nessun badge Plus, bottom sheet con "Apri")
 
-**In Settings (sezione Schede):**
+**In Settings (sezione Schede) — modifica `SettingsPage.tsx`:**
 
-- Se `isPlusActive === false`:
-  - I toggle delle schede sono **disabilitati** (opacity-50, non interattivi)
-  - Accanto a ogni nome scheda: badge `"Plus"` — `text-[#7DA3A0] text-xs`
+- Attualmente c'è un toggle unico (`toggleAllCards`) con icona `LayoutGrid`. Se `isPlusActive === false`:
+  - Il toggle `Switch` è **disabilitato** (opacity-50, non interattivo)
+  - Accanto al label: badge `"Plus"` — `text-[#7DA3A0] text-xs`
   - Sotto la sezione: link `"Scopri Plus"` → `/plus`
 
 - Se `isPlusActive === true`:
-  - Toggle funzionanti come da Epic 14
+  - Toggle funzionante come ora
+
+**Tab Cards nella nav — modifica `useNavConfig.tsx`:**
+
+- Attualmente la tab "Cards" è visibile se `anyCardEnabled` (linea 41). Aggiungere: `visible: isPlusActive && anyCardEnabled`
+- Se `!isPlusActive`, la tab Cards scompare dalla nav
 
 ---
 
@@ -180,20 +193,40 @@ Continua Epic 15 di opad.me. Aggiungi il gating Plus al tracking `quantity_reduc
 
 **Dipende da:** story-15-01 (hook `usePlusStatus`) + Epic 03/05 (Check-in / Add-Edit Area)
 
+**File da modificare:**
+- `src/components/home/ActivityCard.tsx` — disaccoppiare `anyCardEnabled` da `quantity_reduce`, usare `isPlusActive`
+- `src/pages/Activities.tsx` — stessa logica di disaccoppiamento (linea 137)
+- `src/pages/AreaForm.tsx` — badge Plus sulla selezione `quantity_reduce`
+- `src/pages/AreaDetail.tsx` — gating grafico quantità
+
+**REFACTORING CRITICO — disaccoppiamento `anyCardEnabled`:**
+
+In `ActivityCard.tsx` le linee 61-62 attualmente leggono:
+```typescript
+const isQuantityReduce = anyCardEnabled && area.tracking_mode === "quantity_reduce" && area.show_quick_add_home;
+const isQuantityNoQuickAdd = anyCardEnabled && area.tracking_mode === "quantity_reduce" && !area.show_quick_add_home;
+```
+Devono diventare:
+```typescript
+const isQuantityReduce = isPlusActive && area.tracking_mode === "quantity_reduce" && area.show_quick_add_home;
+const isQuantityNoQuickAdd = isPlusActive && area.tracking_mode === "quantity_reduce" && !area.show_quick_add_home;
+```
+Lo stesso in `Activities.tsx` linea 137.
+
 **Nella Home (check-in):**
 
 - Se `isPlusActive === false` e l'area ha `tracking_mode = 'quantity_reduce'`:
-  - Il `QuantityCounter` (–/+1) **non** viene mostrato
-  - Al suo posto appare il check-in binario standard: `"Fatto"` / `"Done"`
+  - Il `QuantityCounter` (`src/components/home/QuantityCounter.tsx`) **non** viene mostrato
+  - Al suo posto appare il check-in binario standard (il done button check che esiste già)
   - Un badge inline sotto la CTA: `"Tracciamento avanzato con Plus"` (IT) / `"Advanced tracking with Plus"` (EN) — `text-[#7DA3A0] text-xs`
   - Tap sul badge → naviga a `/plus`
 
 - Se `isPlusActive === true`:
   - Comportamento completo: `QuantityCounter` visibile, tracking quantitativo attivo
 
-**Nella creazione area (Add Area, Epic 05):**
+**Nella creazione area (Add Area) — modifica `AreaForm.tsx`:**
 
-- Quando l'utente seleziona `tracking_mode = 'quantity_reduce'`:
+- Quando l'utente seleziona `tracking_mode = 'quantity_reduce'` (linea 298):
   - Se `isPlusActive === false`:
     - Mostra un avviso inline sotto la selezione: `"Il tracciamento quantitativo è disponibile con Plus. L'area funzionerà in modalità standard."` (IT) / `"Quantitative tracking is available with Plus. The area will work in standard mode."` (EN)
     - L'area viene creata comunque con `tracking_mode = 'quantity_reduce'` nel DB (i dati sono pronti per quando l'utente attiverà Plus)
@@ -202,7 +235,7 @@ Continua Epic 15 di opad.me. Aggiungi il gating Plus al tracking `quantity_reduc
   - Se `isPlusActive === true`:
     - Flusso completo come da Epic 05
 
-**Nell'Area Detail:**
+**Nell'Area Detail — modifica `AreaDetail.tsx`:**
 
 - Se `isPlusActive === false` e area `quantity_reduce`:
   - Il grafico mostra il trend EWMA binario (non il grafico quantità)
@@ -223,24 +256,34 @@ Continua Epic 15 di opad.me. Aggiungi il gating Plus ai temi extra nella scherma
 
 **Dipende da:** story-15-01 (hook `usePlusStatus`) + story-07-08 (Theme system)
 
-**In Settings (sezione Temi):**
+**File da modificare:**
+- `src/pages/SettingsPage.tsx` — sezione "Color palette" (linee 218-238), aggiungere badge Plus sulle palette extra
+- `src/hooks/useTheme.tsx` — aggiungere logica di reset a teal se Plus scade
+
+**In Settings (sezione Temi) — modifica `SettingsPage.tsx`:**
+
+Attualmente la sezione palette (linee 220-238) mostra 4 cerchi colorati selezionabili liberamente con `onClick={() => setPalette(opt.value)}`.
 
 - Il tema **Teal** resta sempre selezionabile (free)
 - I temi **Ocean**, **Sunset**, **Forest**:
 
   - Se `isPlusActive === false`:
-    - La card/chip del tema mostra un badge `"Plus"` — `text-[#7DA3A0] text-xs`
-    - Tap → non cambia tema, mostra un messaggio inline sotto il selettore:
+    - La card/chip del tema mostra un badge `"Plus"` — `text-[#7DA3A0] text-xs` sotto il nome
+    - Tap → non cambia tema (`onClick` disabilitato per queste palette), mostra un messaggio inline sotto il selettore:
       `"Disponibile con Plus"` (IT) / `"Available with Plus"` (EN) — `text-[#B9C0C1] text-xs`
     - Link: `"Scopri Plus"` → `/plus`
 
   - Se `isPlusActive === true`:
     - Tutti i temi selezionabili senza restrizioni
 
-- La selezione **dark / light / system** resta **free** per tutte le palette
+- La selezione **dark / light / system** (linee 198-216) resta **free** per tutte le palette
 
-**Se l'utente aveva un tema Plus attivo e Plus scade:**
-- Il tema torna automaticamente a Teal (mantenendo la modalità dark/light/system scelta)
+**Reset tema — modifica `useTheme.tsx`:**
+
+Se l'utente aveva un tema Plus attivo e Plus scade:
+- Il hook `useTheme` deve verificare `isPlusActive` all'avvio
+- Se `!isPlusActive` e `palette !== 'teal'` → `setPalette('teal')` automaticamente
+- Mantiene la modalità dark/light/system scelta
 - Nessun messaggio — il cambio è silenzioso
 
 ---
@@ -250,6 +293,8 @@ Continua Epic 15 di opad.me. Aggiungi il gating Plus ai temi extra nella scherma
 Continua Epic 15 di opad.me. Aggiungi una voce "Plus" nella sezione Account della schermata Settings.
 
 **Dipende da:** story-15-03 (pagina `/plus`)
+
+**File da modificare:** `src/pages/SettingsPage.tsx` — sezione Account (linee 367-401)
 
 **Dove appare:**
 - Nella sezione **Account** di Settings, sopra il bottone "Esci / Sign out"

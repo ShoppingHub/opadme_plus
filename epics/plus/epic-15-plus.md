@@ -332,6 +332,67 @@ Per l'MVP, l'attivazione Plus è gestita manualmente dal backend (`plus_provider
 
 ---
 
+## Stato implementazione attuale (joyous-beginning)
+
+> Analisi del repository `ShoppingHub/joyous-beginning` — codebase Lovable.
+
+### Feature già implementate (da modificare per Plus)
+
+| Componente | File | Stato | Modifica necessaria |
+|---|---|---|---|
+| **Schede system** | `src/lib/cards.ts`, `src/hooks/useUserCards.tsx` | Completo | Aggiungere check `isPlusActive` |
+| **CardEntryPoints** | `src/components/CardEntryPoints.tsx` | Completo (bottom sheet con "Apri") | Aggiungere badge Plus + CTA upgrade se `!isPlusActive` |
+| **QuantityCounter** | `src/components/home/QuantityCounter.tsx` | Completo | Nascondere se `!isPlusActive` |
+| **ActivityCard** | `src/components/home/ActivityCard.tsx` | Completo | Disaccoppiare `anyCardEnabled` da `quantity_reduce`, usare `isPlusActive` |
+| **Theme system** | `src/hooks/useTheme.tsx` | Completo (4 palette libere) | Gating palette extra (ocean, sunset, forest) dietro Plus |
+| **Settings palette** | `src/pages/SettingsPage.tsx` (linee 218-238) | Completo (tutti i temi selezionabili) | Badge Plus + disable su palette extra |
+| **Settings toggle schede** | `src/pages/SettingsPage.tsx` (linee 276-289) | Completo (toggle unico on/off) | Disable + badge Plus se `!isPlusActive` |
+| **Nav Cards tab** | `src/hooks/useNavConfig.tsx` | Tab "Cards" condizionale (`anyCardEnabled`) | La tab Cards deve essere nascosta se `!isPlusActive` |
+| **AreaForm** | `src/pages/AreaForm.tsx` | `tracking_mode` selezionabile | Badge Plus su `quantity_reduce` se `!isPlusActive` |
+| **Activities page** | `src/pages/Activities.tsx` | Entry point schede + quantity display | Badge Plus su entry point + disaccoppiamento `anyCardEnabled` |
+
+### Feature da creare (non esistono)
+
+| Componente | Route / File | Note |
+|---|---|---|
+| **Colonne DB Plus** | Migrazione Supabase | `plus_active`, `plus_activated_at`, `plus_expires_at`, `plus_provider` |
+| **Hook `usePlusStatus`** | `src/hooks/usePlusStatus.tsx` | Nuovo context/hook per stato Plus |
+| **Banner Plus** | `src/components/home/PlusBanner.tsx` | Nuovo componente nella Home |
+| **Pagina /plus** | `src/pages/PlusPage.tsx` | Nuova pagina + route in `App.tsx` |
+| **Voce Plus in Settings** | `src/pages/SettingsPage.tsx` | Aggiungere riga nella sezione Account |
+
+### Refactoring critici
+
+**1. Disaccoppiamento `anyCardEnabled` ↔ `quantity_reduce`**
+
+Attualmente in `ActivityCard.tsx` (linee 61-62):
+```typescript
+const isQuantityReduce = anyCardEnabled && area.tracking_mode === "quantity_reduce" && area.show_quick_add_home;
+```
+Deve diventare:
+```typescript
+const isQuantityReduce = isPlusActive && area.tracking_mode === "quantity_reduce" && area.show_quick_add_home;
+```
+Lo stesso pattern appare in `Activities.tsx` (linea 137).
+
+**2. Navigazione: tab Cards condizionale**
+
+In `useNavConfig.tsx` (linea 41), la tab "Cards" è visibile se `anyCardEnabled`. Con Plus:
+- Se `isPlusActive === false` → tab nascosta (anche se le schede erano abilitate)
+- Se `isPlusActive === true` → visibile come ora (se schede abilitate)
+
+**3. Settings: toggle schede**
+
+In `SettingsPage.tsx` il toggle è un unico switch per tutte le schede (`toggleAllCards`). Con Plus:
+- Se `isPlusActive === false` → switch disabilitato con badge "Plus"
+- Se `isPlusActive === true` → funziona come ora
+
+**4. Theme: nessun gating attuale**
+
+In `useTheme.tsx` non c'è nessun concetto di palette bloccata. `setPalette` accetta qualsiasi valore. Il gating va aggiunto nel frontend (Settings) e nel hook (reset a teal se Plus scade).
+
+---
+
 ## Dipendenze
 
 - **Epic 02** (Home) — banner Plus nella Home
