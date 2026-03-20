@@ -154,7 +154,7 @@ Una pagina dedicata che presenta le funzionalità Plus e permette l'attivazione.
 | CTA primario | `"Attiva Plus"` | `"Activate Plus"` |
 | Restore | `"Già Plus? Ripristina acquisto"` | `"Already Plus? Restore purchase"` |
 
-> La pagina è informativa. Il CTA "Attiva Plus" connette al sistema di pagamento (fuori scope MVP — vedi note tecniche).
+> La pagina è informativa. Il CTA "Attiva Plus" redirige a Stripe Checkout (vedi Prompt 8 e note tecniche).
 
 ---
 
@@ -171,7 +171,7 @@ plus_expires_at      TIMESTAMPTZ  nullable
 plus_provider        TEXT         nullable  CHECK (plus_provider IN ('stripe', 'apple', 'google', 'manual'))
 ```
 
-> Per l'MVP, l'attivazione può essere manuale (`plus_provider = 'manual'`). L'integrazione con provider di pagamento (Stripe, App Store, Play Store) è fuori scope iniziale ma la struttura è pronta.
+> L'attivazione avviene tramite Stripe Checkout (vedi note tecniche). Il campo `plus_provider` supporta anche `'apple'`, `'google'`, `'manual'` per integrazioni future.
 
 ### RLS
 
@@ -314,15 +314,32 @@ Varianti:
 
 ## Note Tecniche
 
-### Pagamento (fuori scope MVP)
+### Pagamento — Stripe Checkout (hosted)
 
-Il CTA "Attiva Plus" nella pagina `/plus` sarà inizialmente un placeholder. Le opzioni per l'integrazione futura:
+Il CTA "Attiva Plus" nella pagina `/plus` redirige a **Stripe Checkout** (sessione hosted).
 
-- **Web app (PWA):** Stripe Checkout / Stripe Billing
-- **iOS wrapper:** In-App Purchase (Apple)
-- **Android wrapper:** Google Play Billing
+| Proprietà | Valore |
+|---|---|
+| Modello | Abbonamento ricorrente mensile |
+| Prezzo | **2,50 €/mese** |
+| Provider | Stripe Checkout (hosted redirect) |
+| Codice sconto | `MCAI2026` — 100% di sconto (coupon Stripe con Promotion Code) |
 
-Per l'MVP, l'attivazione Plus è gestita manualmente dal backend (`plus_provider = 'manual'`).
+**Flusso:**
+1. Utente inserisce (opzionalmente) un codice sconto nel campo dedicato
+2. Tap su "Attiva Plus" → frontend chiama Edge Function `create-checkout-session`
+3. Edge Function crea sessione Stripe Checkout con subscription mode, applica eventuale promo code
+4. Utente viene rediretto a Stripe → completa il pagamento
+5. Stripe invia webhook `checkout.session.completed` → Edge Function `stripe-webhook` attiva Plus nel DB
+6. Utente torna all'app su `/plus?success=true` → messaggio di conferma
+
+**Edge Functions:**
+- `create-checkout-session` — crea la sessione Stripe, risolve codice promo
+- `stripe-webhook` — gestisce `checkout.session.completed`, `customer.subscription.deleted`, `invoice.payment_failed`
+
+**Env vars (Supabase Secrets):** `STRIPE_SECRET_KEY`, `STRIPE_PLUS_PRICE_ID`, `STRIPE_WEBHOOK_SECRET`, `APP_URL`
+
+> Per altre piattaforme future: iOS → In-App Purchase (Apple), Android → Google Play Billing.
 
 ### Performance
 
@@ -413,3 +430,4 @@ In `useTheme.tsx` non c'è nessun concetto di palette bloccata. `setPalette` acc
 - `story-15-05` — Gating tracking riduzione: fallback binario per utenti free
 - `story-15-06` — Gating temi: badge Plus sulle palette extra in Settings
 - `story-15-07` — Voce "Plus" nella sezione Account di Settings
+- `story-15-08` — Pagamento Stripe Checkout: Edge Functions + integrazione frontend

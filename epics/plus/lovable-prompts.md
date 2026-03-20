@@ -92,10 +92,12 @@ Tre card feature (background card surface, rounded-xl, con icona + titolo + desc
 2. **Riduzione abitudini** — icona `TrendingDown`, IT: `"Traccia la riduzione giornaliera di ciò che vuoi osservare."` — EN: `"Track the daily reduction of what you want to observe."`
 3. **Temi** — icona `Palette`, IT: `"Ocean, Sunset, Forest — personalizza l'aspetto."` — EN: `"Ocean, Sunset, Forest — customize the look."`
 
-**CTA primario** (full-width, accent background): IT `"Attiva Plus"` — EN `"Activate Plus"`.
-Per ora il tap mostra un messaggio inline sotto il bottone: IT `"Disponibile a breve."` — EN `"Coming soon."` (il pagamento non è ancora integrato).
+**CTA primario** (full-width, accent background): IT `"Attiva Plus — 2,50 €/mese"` — EN `"Activate Plus — €2.50/month"`.
+Tap → chiama la Edge Function `create-checkout-session` (vedi Prompt 8) e redirige a Stripe Checkout.
 
-**Link sotto il CTA:** IT `"Già Plus? Ripristina acquisto"` — EN `"Already Plus? Restore purchase"` — stessa logica placeholder.
+**Campo codice sconto** (opzionale, sopra il CTA): un campo di testo con placeholder IT `"Codice sconto"` — EN `"Discount code"`. Se compilato, il codice viene passato alla Edge Function che lo applica come `discounts` nella sessione Stripe.
+
+**Link sotto il CTA:** IT `"Già Plus? Ripristina acquisto"` — EN `"Already Plus? Restore purchase"` — verifica lo stato dell'abbonamento Stripe e aggiorna `plus_active` di conseguenza.
 
 **Se l'utente è già Plus:** il CTA è sostituito da un badge: IT `"Plus attivo"` — EN `"Plus active"` (colore accent). Le card feature restano visibili.
 
@@ -207,5 +209,69 @@ Continua opad.me. Aggiungi una **voce "Plus"** nella sezione Account della scher
 - Se `isPlusActive === true`: IT `"Attivo"` — EN `"Active"` (colore accent)
 
 Tap naviga a `/plus` sia per utenti free che Plus.
+
+Aggiungi le chiavi di traduzione necessarie.
+
+---
+
+## Prompt 8 — Pagamento Stripe Checkout
+
+Continua opad.me. Integra **Stripe Checkout** (hosted) per attivare l'abbonamento Plus.
+
+**Piano:** abbonamento mensile ricorrente, **2,50 €/mese**.
+
+### Edge Function `create-checkout-session`
+
+Crea una Supabase Edge Function `create-checkout-session` che:
+
+1. Riceve `{ userId, email, promoCode? }` dal frontend (POST, autenticato)
+2. Crea una sessione Stripe Checkout (`stripe.checkout.sessions.create`) con:
+   - `mode: 'subscription'`
+   - `line_items`: 1 item con il Price ID dell'abbonamento Plus (salvato in env var `STRIPE_PLUS_PRICE_ID`)
+   - `customer_email`: email dell'utente
+   - `client_reference_id`: userId
+   - `success_url`: `{APP_URL}/plus?success=true`
+   - `cancel_url`: `{APP_URL}/plus?canceled=true`
+   - Se `promoCode` è presente: `discounts: [{ promotion_code: promoCode }]` — dove `promoCode` è l'ID della promotion code Stripe (il frontend manda il codice testuale, la Edge Function cerca la promotion code attiva con `stripe.promotionCodes.list({ code: promoCode, active: true })` e usa il primo risultato)
+3. Ritorna `{ url }` — l'URL della sessione Stripe Checkout
+
+**Env vars necessarie** (da configurare in Supabase Dashboard > Edge Functions > Secrets):
+- `STRIPE_SECRET_KEY` — chiave segreta Stripe
+- `STRIPE_PLUS_PRICE_ID` — ID del Price per l'abbonamento Plus mensile
+- `APP_URL` — URL base dell'app (es. `https://opad.me`)
+
+### Edge Function `stripe-webhook`
+
+Crea una Supabase Edge Function `stripe-webhook` che:
+
+1. Riceve i webhook Stripe (POST, verifica firma con `STRIPE_WEBHOOK_SECRET`)
+2. Gestisce questi eventi:
+   - `checkout.session.completed` → setta `plus_active = true`, `plus_activated_at = now()`, `plus_provider = 'stripe'` per l'utente con `id = client_reference_id`
+   - `customer.subscription.deleted` → setta `plus_active = false`, `plus_expires_at = now()` per l'utente associato al customer Stripe
+   - `invoice.payment_failed` → (opzionale) logga l'evento, non disattiva subito
+
+**Env vars:** `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`
+
+### Frontend — Pagina `/plus`
+
+Aggiorna la pagina `/plus`:
+
+1. Il CTA `"Attiva Plus"` al tap:
+   - Se presente un codice nel campo sconto, lo include nella request
+   - Chiama `create-checkout-session` passando userId, email e eventuale promoCode
+   - Redirige a `response.url` (Stripe Checkout)
+   - Durante il caricamento: bottone in stato loading (spinner + testo IT `"Reindirizzamento..."` — EN `"Redirecting..."`)
+
+2. Al ritorno da Stripe:
+   - Se URL contiene `?success=true`: mostra messaggio di conferma IT `"Plus attivato! Benvenuto."` — EN `"Plus activated! Welcome."` (badge accent, auto-dismiss dopo 5s). Ricarica lo stato Plus dal DB.
+   - Se URL contiene `?canceled=true`: mostra messaggio neutro IT `"Pagamento annullato."` — EN `"Payment canceled."` (auto-dismiss dopo 3s)
+
+### Setup Stripe (manuale, non nel prompt)
+
+> **Nota per lo sviluppatore:** Prima di testare, creare su Stripe Dashboard:
+> 1. Un **Product** "opad.me Plus" con un **Price** di €2,50/mese (recurring, monthly)
+> 2. Un **Coupon** del 100% → creare una **Promotion Code** con codice `MCAI2026`
+> 3. Configurare il **Webhook endpoint** puntando alla Edge Function `stripe-webhook` con gli eventi: `checkout.session.completed`, `customer.subscription.deleted`, `invoice.payment_failed`
+> 4. Salvare le env vars nelle Secrets di Supabase
 
 Aggiungi le chiavi di traduzione necessarie.
