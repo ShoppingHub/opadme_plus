@@ -91,6 +91,9 @@ betonme/
 │   │   └── stories.md
 │   ├── rebrand/
 │   │   └── stories.md               ← rename BetonMe → opad.me + wordmark colori
+│   ├── plus/
+│   │   ├── epic-15-plus.md           ← Plus: abbonamento premium (schede, riduzione, temi)
+│   │   └── stories.md
 │   └── google-tasks/
 │       ├── epic-13-google-tasks.md   ← Google Tasks sync bidirezionale
 │       └── stories.md
