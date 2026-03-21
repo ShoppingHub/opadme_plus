@@ -156,7 +156,7 @@ settings_score_toggled
 
 | Evento | Trigger | Proprietà |
 |---|---|---|
-| `area_created` | Nuova area creata | `area_type`: string, `tracking_mode`: string |
+| `area_created` | Nuova area creata | `area_type`: string, `tracking_mode`: string, `source`: `"onboarding"` \| `"activities_tab"` \| `"empty_state"`, `category_count`: number |
 | `area_edited` | Area modificata | `area_type`: string |
 | `area_archived` | Area archiviata | `area_type`: string |
 

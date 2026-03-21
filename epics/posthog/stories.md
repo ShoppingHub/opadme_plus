@@ -151,13 +151,22 @@ posthog.init('phc_8B5fL5BsMjtGg0GJ8AB0220jGklzgYqyvk8sFftnUGA', {
 
 **Cosa fare:**
 - Tracciare i seguenti eventi:
-  - `area_created` — nuova area creata, con proprietà `area_type` e `tracking_mode`
+  - `area_created` — nuova area creata, con proprietà:
+    - `area_type`: macro-categoria (`"health"`, `"study"`, `"reduce"`, `"finance"`)
+    - `tracking_mode`: `"binary"` o `"quantity_reduce"`
+    - `source`: da dove viene creata l'attività:
+      - `"onboarding"` — durante il flusso di onboarding
+      - `"activities_tab"` — dal tab Attività (pulsante +)
+      - `"empty_state"` — dal CTA dello stato vuoto di una macro-categoria
+    - `category_count`: numero totale di attività attive nella stessa macro-categoria **dopo** la creazione (es. se l'utente crea la 3ª attività in "health", il valore è `3`)
   - `area_edited` — area modificata, con proprietà `area_type`
   - `area_archived` — area archiviata, con proprietà `area_type`
 
 **Acceptance criteria:**
 - [ ] Tutti e tre gli eventi vengono tracciati
-- [ ] Le proprietà riflettono il tipo e la modalità corretti
+- [ ] `area_created` include `area_type`, `tracking_mode`, `source` e `category_count`
+- [ ] La `source` distingue correttamente onboarding vs activities_tab vs empty_state
+- [ ] `category_count` riflette il numero di attività attive nella macro-categoria dopo la creazione
 
 ---
 
