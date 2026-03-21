@@ -29,20 +29,35 @@ L'integrazione è **invisibile all'utente**. Nessun banner, nessun toggle, nessu
 
 ## Inizializzazione
 
-### SDK
+### Snippet HTML
 
-PostHog va inizializzato all'avvio dell'app con:
-- Project API key (da variabile d'ambiente)
-- Host dell'istanza PostHog (cloud EU o self-hosted)
-- Autocapture disabilitato — solo eventi espliciti
-- Pageview automatico abilitato
+PostHog viene inizializzato tramite snippet nel `<head>` di `index.html`. Lo snippet carica l'SDK in modo asincrono e non blocca il rendering.
+
+```html
+<script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group identify setPersonProperties setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags resetGroups onFeatureFlags addFeatureFlagsHandler onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_8B5fL5BsMjtGg0GJ8AB0220jGklzgYqyvk8sFftnUGA', {
+        api_host: 'https://eu.i.posthog.com',
+        defaults: '2026-01-30',
+        autocapture: false,
+        disable_session_recording: true,
+        respect_dnt: true,
+        persistence: 'localStorage'
+    })
+</script>
+```
+
+### Wrapper React
+
+Il pacchetto `posthog-js` viene installato come dipendenza per avere l'import tipizzato nel codice React. Un modulo helper (`src/lib/posthog.ts`) esporta l'istanza per le stories successive (identify, capture, reset).
 
 ### Configurazione
 
 | Proprietà | Valore |
 |---|---|
+| API key | `phc_8B5fL5BsMjtGg0GJ8AB0220jGklzgYqyvk8sFftnUGA` |
+| Host | `https://eu.i.posthog.com` (Cloud EU) |
 | Autocapture | **Disabilitato** — troppo rumore, eventi non significativi |
-| Pageview automatico | **Abilitato** — traccia la navigazione tra route |
 | Session recording | **Disabilitato** (MVP) — valutare in futuro |
 | Feature flags | **Disabilitato** (MVP) — valutare in futuro |
 | Persistence | `localStorage` |

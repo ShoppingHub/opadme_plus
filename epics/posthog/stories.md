@@ -22,24 +22,60 @@ story-16-10  Aggiornamento proprietà utente
 **Contesto:** opad.me è un'app React di osservazione del benessere personale. Vogliamo integrare PostHog per la product analytics.
 
 **Cosa fare:**
-- Installare il pacchetto `posthog-js`
-- Creare un modulo di inizializzazione PostHog che venga eseguito all'avvio dell'app
-- Configurare PostHog con:
-  - API key da variabile d'ambiente (`VITE_POSTHOG_API_KEY`)
-  - Host da variabile d'ambiente (`VITE_POSTHOG_HOST`)
-  - Autocapture: disabilitato
-  - Pageview automatico: abilitato
-  - Session recording: disabilitato
-  - Persistence: `localStorage`
-  - Rispetto Do Not Track: abilitato
-- Se la API key non è presente (es. ambiente di sviluppo), PostHog non si inizializza e l'app funziona normalmente
+
+### Step 1 — Snippet in index.html
+
+Inserire il seguente snippet nel `<head>` di `index.html`, **prima** di qualsiasi altro script:
+
+```html
+<script>
+    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group identify setPersonProperties setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags resetGroups onFeatureFlags addFeatureFlagsHandler onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+    posthog.init('phc_8B5fL5BsMjtGg0GJ8AB0220jGklzgYqyvk8sFftnUGA', {
+        api_host: 'https://eu.i.posthog.com',
+        defaults: '2026-01-30'
+    })
+</script>
+```
+
+### Step 2 — Wrapper per il codice React
+
+Installare `posthog-js` come dipendenza e creare un modulo helper (es. `src/lib/posthog.ts`) che esponga `posthog` per l'uso nel codice React:
+
+```typescript
+import posthog from 'posthog-js'
+export default posthog
+```
+
+Lo snippet in `index.html` gestisce l'inizializzazione. Il modulo helper serve solo per avere l'import tipizzato nelle stories successive (identify, capture, reset).
+
+### Step 3 — Configurazione aggiuntiva
+
+Dopo l'init nello snippet, aggiungere queste opzioni di configurazione (nello snippet stesso o nel modulo helper):
+- Autocapture: **disabilitato** (`autocapture: false`)
+- Session recording: **disabilitato** (`disable_session_recording: true`)
+- Rispetto Do Not Track: **abilitato** (`respect_dnt: true`)
+- Persistence: `localStorage`
+
+L'init nello snippet diventa:
+```javascript
+posthog.init('phc_8B5fL5BsMjtGg0GJ8AB0220jGklzgYqyvk8sFftnUGA', {
+    api_host: 'https://eu.i.posthog.com',
+    defaults: '2026-01-30',
+    autocapture: false,
+    disable_session_recording: true,
+    respect_dnt: true,
+    persistence: 'localStorage'
+})
+```
 
 **Acceptance criteria:**
-- [ ] PostHog SDK installato e inizializzato all'avvio
+- [ ] Lo snippet PostHog è nel `<head>` di `index.html`
+- [ ] Il pacchetto `posthog-js` è installato come dipendenza
+- [ ] Un modulo helper `src/lib/posthog.ts` esporta l'istanza PostHog per l'uso nel codice React
 - [ ] Autocapture disabilitato
-- [ ] Pageview automatico abilitato
-- [ ] API key e host in variabili d'ambiente
-- [ ] L'app funziona senza errori anche senza le variabili PostHog configurate
+- [ ] Session recording disabilitato
+- [ ] Do Not Track rispettato
+- [ ] L'app funziona normalmente — PostHog non blocca il rendering
 
 ---
 
