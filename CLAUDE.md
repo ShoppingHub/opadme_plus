@@ -94,8 +94,11 @@ betonme/
 │   ├── plus/
 │   │   ├── epic-15-plus.md           ← Plus: abbonamento premium (schede, riduzione, temi)
 │   │   └── stories.md
-│   └── google-tasks/
-│       ├── epic-13-google-tasks.md   ← Google Tasks sync bidirezionale
+│   ├── google-tasks/
+│   │   ├── epic-13-google-tasks.md   ← Google Tasks sync bidirezionale
+│   │   └── stories.md
+│   └── posthog/
+│       ├── epic-16-posthog.md        ← PostHog analytics (identify + custom events)
 │       └── stories.md
 │
 ├── lovable/
