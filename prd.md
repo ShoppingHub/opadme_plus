@@ -98,6 +98,7 @@ App
 | 16 | Demo mode — accesso senza autenticazione | `epics/auth/stories.md` (story-00-08) | P2 |
 | 17 | Schede — moduli specialistici (Gym, Finance) | `epics/cards/epic-14-cards.md` | P1 |
 | 18 | Plus — abbonamento premium (schede, riduzione, temi extra) | `epics/plus/epic-15-plus.md` | P1 |
+| 19 | PostHog Analytics — identify utenti + eventi custom | `epics/posthog/epic-16-posthog.md` | P1 |
 
 ---
 
