@@ -83,6 +83,9 @@ betonme/
 │   ├── gym/
 │   │   ├── epic-11-gym.md           ← gym card / scheda palestra (pagina dedicata /cards/gym)
 │   │   └── stories.md
+│   ├── diet/
+│   │   ├── epic-17-diet.md          ← diet card / scheda dieta (pagina dedicata /cards/diet)
+│   │   └── stories.md
 │   ├── cards/
 │   │   ├── epic-14-cards.md         ← Schede: moduli specialistici con pagine dedicate
 │   │   └── stories.md
