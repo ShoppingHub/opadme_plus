@@ -101,6 +101,7 @@ App
 | 18 | Plus — abbonamento premium (schede, riduzione, temi extra) | `epics/plus/epic-15-plus.md` | P1 |
 | 19 | PostHog Analytics — identify utenti + eventi custom | `epics/posthog/epic-16-posthog.md` | P1 |
 | 20 | Diet Card — scheda dieta (Plus) | `epics/diet/epic-17-diet.md` | P2 |
+| 21 | Plus Always-On — freemium unlock per test completo | `epics/unlock-premium-freemium/epic-18-unlock-premium-freemium.md` | P0 |
 
 ---
 

@@ -100,8 +100,11 @@ betonme/
 │   ├── google-tasks/
 │   │   ├── epic-13-google-tasks.md   ← Google Tasks sync bidirezionale
 │   │   └── stories.md
-│   └── posthog/
-│       ├── epic-16-posthog.md        ← PostHog analytics (identify + custom events)
+│   ├── posthog/
+│   │   ├── epic-16-posthog.md        ← PostHog analytics (identify + custom events)
+│   │   └── stories.md
+│   └── unlock-premium-freemium/
+│       ├── epic-18-unlock-premium-freemium.md ← Plus always-on: sblocca tutto per test completo
 │       └── stories.md
 │
 ├── lovable/
