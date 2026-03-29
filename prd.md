@@ -61,6 +61,7 @@ App
     ├── [Tab 3] Progress                   → epic-12-progress.md
     ├── Schede (pagine dedicate)            → epic-14-cards.md · abilitabili da Impostazioni
     │   ├── /cards/gym                     → Scheda Palestra (epic-11-gym.md)
+    │   ├── /cards/diet                    → Scheda Dieta (epic-17-diet.md)
     │   └── /cards/finance                 → Proiezione Finanze (epic-06-finance.md)
     └── [Ultima] Impostazioni              → epic-07-settings.md
 ```
@@ -98,6 +99,9 @@ App
 | 16 | Demo mode — accesso senza autenticazione | `epics/auth/stories.md` (story-00-08) | P2 |
 | 17 | Schede — moduli specialistici (Gym, Finance) | `epics/cards/epic-14-cards.md` | P1 |
 | 18 | Plus — abbonamento premium (schede, riduzione, temi extra) | `epics/plus/epic-15-plus.md` | P1 |
+| 19 | PostHog Analytics — identify utenti + eventi custom | `epics/posthog/epic-16-posthog.md` | P1 |
+| 20 | Diet Card — scheda dieta (Plus) | `epics/diet/epic-17-diet.md` | P2 |
+| 21 | Plus Always-On — freemium unlock per test completo | `epics/unlock-premium-freemium/epic-18-unlock-premium-freemium.md` | P0 |
 
 ---
 
@@ -170,6 +174,12 @@ Tabelle Gym Card (schema v2, vedi Epic 11):
 ```
 gym_programs, gym_program_days, gym_muscle_groups, gym_program_exercises
 gym_sessions, gym_session_exercises
+```
+
+Tabelle Diet Card (vedi Epic 17):
+```
+diet_programs, diet_program_meals, diet_meal_items
+diet_sessions, diet_session_meals, diet_session_items
 ```
 
 ---

@@ -83,6 +83,9 @@ betonme/
 │   ├── gym/
 │   │   ├── epic-11-gym.md           ← gym card / scheda palestra (pagina dedicata /cards/gym)
 │   │   └── stories.md
+│   ├── diet/
+│   │   ├── epic-17-diet.md          ← diet card / scheda dieta (pagina dedicata /cards/diet)
+│   │   └── stories.md
 │   ├── cards/
 │   │   ├── epic-14-cards.md         ← Schede: moduli specialistici con pagine dedicate
 │   │   └── stories.md
@@ -94,8 +97,14 @@ betonme/
 │   ├── plus/
 │   │   ├── epic-15-plus.md           ← Plus: abbonamento premium (schede, riduzione, temi)
 │   │   └── stories.md
-│   └── google-tasks/
-│       ├── epic-13-google-tasks.md   ← Google Tasks sync bidirezionale
+│   ├── google-tasks/
+│   │   ├── epic-13-google-tasks.md   ← Google Tasks sync bidirezionale
+│   │   └── stories.md
+│   ├── posthog/
+│   │   ├── epic-16-posthog.md        ← PostHog analytics (identify + custom events)
+│   │   └── stories.md
+│   └── unlock-premium-freemium/
+│       ├── epic-18-unlock-premium-freemium.md ← Plus always-on: sblocca tutto per test completo
 │       └── stories.md
 │
 ├── lovable/
